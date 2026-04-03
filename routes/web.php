@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
+use App\Http\Controllers\GuestPagesController;
 
-Route::inertia('/', 'Welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+Route::controller(GuestPagesController::class)
+    ->middleware([])
+    ->group(function () {
+        Route::get('/', 'home')->name('home');
+        Route::get('about', 'about')->name('about-page');
+    });
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
