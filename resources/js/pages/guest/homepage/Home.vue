@@ -9,7 +9,7 @@ import HotDeals from './components/HotDeals.vue';
 </script>
 
 <template>
-    <Head title="Home"></Head>
+    <Head title="Home" />
     <GuestLayout>
         <div class="main_container Homepage">
             <Hero />

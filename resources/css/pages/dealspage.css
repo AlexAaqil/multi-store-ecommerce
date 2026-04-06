@@ -1,0 +1,53 @@
+.DealsPage {
+    section {
+        @apply mb-6;
+    }
+
+    .Hero {
+        @apply bg-gray-900 text-white rounded-2xl p-8;
+
+        .hero-wrapper {
+            @apply grid gap-4;
+            
+            .hero-text {
+                .title {
+                    @apply text-3xl font-serif italic mb-2;
+                }
+
+                .description {
+                    @apply text-sm text-gray-300;
+                }
+            }
+
+            .hero-timer {
+                .count-down-timer {
+                    @apply flex gap-3;
+
+                    .timer {
+                        @apply text-center;
+                        
+                        .number {
+                            @apply text-2xl font-bold;
+                        }
+
+                        .label {
+                            @apply text-xs text-gray-400;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .FlashSales {
+        .hotdeals-wrapper {
+            @apply grid gap-4;
+        }
+    }
+
+    .ClearanceSales {
+        .clearancesales-wrapper {
+            @apply grid lg:grid-cols-3 gap-4;
+        }
+    }
+}

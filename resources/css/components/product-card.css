@@ -1,0 +1,66 @@
+.product-card {
+    @apply rounded-xl overflow-hidden;
+
+    .product-image {
+        @apply h-[200px] w-full overflow-hidden;
+
+        img {
+            @apply object-cover h-full w-full;
+        }
+    }
+
+    .product-info {
+        @apply bg-white p-4 grid gap-0.5;
+
+        .product-price-info {
+            .product-price {
+                @apply font-semibold mr-4;
+            }
+
+            .product-discount {
+                .discount-price {
+                    @apply text-gray-400 text-sm line-through mr-2;
+                }
+
+                .discount-pct {
+                    @apply bg-green-100 text-green-900 text-xs rounded-sm py-0.5 px-1;
+                }
+            }
+        }
+    }
+}
+
+.product-card_deal {
+    @apply bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-3.5 cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+
+    .deal-icon {
+        @apply h-14 w-14 rounded-xl overflow-hidden;
+
+        img {
+            @apply object-cover h-[100%] w-[100%];
+        }
+    }
+
+    .deal-info {
+        @apply flex-1;
+
+        .deal-name {
+            @apply font-medium text-sm mb-0.5;
+        }
+
+        .deal-shop {
+            @apply text-xs text-gray-400;
+        }
+    }
+
+    .deal-right {
+        @apply text-right flex-shrink-0;
+        .deal-discount {
+            @apply text-lg font-bold text-green-700;
+        }
+
+        .deal-was {
+            @apply text-xs text-gray-400 line-through;
+        }
+    }
+}

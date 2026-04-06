@@ -9,10 +9,10 @@ const hotDeals = [
 </script>
 
 <template>
-    <section class="HotDeals">
+    <section class="FlashSales">
         <div class="section-header">
-            <div class="section-title">Hot Right Now</div>
-            <Link href="/deals" class="section-link">See all deals →</Link>
+            <div class="section-title">Flash Offers</div>
+            <Link href="/deals" class="section-link">12 active</Link>
         </div>
         
         <div class="hotdeals-wrapper">
