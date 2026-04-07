@@ -61,6 +61,12 @@
 }
 
 .shop-card-app {
+    .shop-card-images {
+        .shop-card-cover {
+            @apply h-36;
+        }
+    }
+
     .shop-card-meta {
         @apply mt-3 pt-3 border-t border-gray-100 flex justify-between items-center;
         .date {

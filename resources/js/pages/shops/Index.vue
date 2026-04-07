@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, Plus, Store } from 'lucide-vue-next';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import shopsLinks from '@/routes/shops';
 
 interface Shop {
     id: number;
@@ -116,7 +117,7 @@ const deleteShop = (id: number) => {
                             
                             <div class="actions">
                                 <a
-                                    :href="`/shops/${shop.id}/edit`"
+                                    :href="shopsLinks.edit(shop.id).url"
                                     class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
                                     title="Edit Shop"
                                 >

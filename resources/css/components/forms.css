@@ -1,0 +1,28 @@
+form {
+    @apply bg-white p-6 rounded-xl border border-gray-200;
+    
+    .inputs-group {
+        @apply mb-4;
+
+        label {
+            @apply my-2;
+        }
+
+        label.required {
+            @apply after:content-['*'] after:ml-[0.2px] after:text-red-500 after:font-bold;
+        }
+    }
+
+    .inputs-group-wrapper,
+    .inputs-group-wrapper-3 {
+        @apply md:grid md:gap-6 md:items-start;
+    }
+
+    .inputs-group-wrapper {
+        @apply md:grid-cols-2;
+    }
+
+    .inputs-group-wrapper-3 {
+        @apply md:grid-cols-3;
+    }
+}

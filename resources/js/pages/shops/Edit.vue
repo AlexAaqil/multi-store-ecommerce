@@ -17,8 +17,8 @@ interface Shop {
     id: number;
     name: string;
     description: string | null;
-    logo_url: string | null;
-    cover_url: string | null;
+    logo_image: string | null;
+    cover_image: string | null;
     contact_email: string | null;
     contact_phone: string | null;
     is_active: boolean;
@@ -44,8 +44,8 @@ const form = useForm({
     _method: 'PUT',
 });
 
-const logoPreview = ref<string | null>(props.shop.logo_url);
-const coverPreview = ref<string | null>(props.shop.cover_url);
+const logoPreview = ref<string | null>(props.shop.logo_image);
+const coverPreview = ref<string | null>(props.shop.cover_image);
 
 // Handle logo file selection
 const handleLogoChange = (e: Event) => {
@@ -70,7 +70,7 @@ const handleCoverChange = (e: Event) => {
 // Remove logo
 const removeLogo = () => {
     form.logo = null;
-    if (logoPreview.value && !props.shop.logo_url) {
+    if (logoPreview.value && !props.shop.logo_image) {
         URL.revokeObjectURL(logoPreview.value);
     }
     logoPreview.value = null;
@@ -79,7 +79,7 @@ const removeLogo = () => {
 // Remove cover
 const removeCover = () => {
     form.cover = null;
-    if (coverPreview.value && !props.shop.cover_url) {
+    if (coverPreview.value && !props.shop.cover_image) {
         URL.revokeObjectURL(coverPreview.value);
     }
     coverPreview.value = null;
@@ -98,44 +98,67 @@ const submitForm = () => {
 <template>
     <Head title="Edit Shop" />
 
-    <div class="max-w-2xl mx-auto py-8 px-4">
+    <div class="min-w-4xl mx-auto py-8 px-4">
         <div class="mb-6">
             <h1 class="text-2xl font-serif font-semibold">Edit Shop</h1>
             <p class="text-sm text-gray-500 mt-1">Update your shop information</p>
         </div>
 
-        <form @submit.prevent="submitForm" class="space-y-6 bg-white p-6 rounded-xl border border-gray-200">
-            <!-- Shop Name -->
-            <div class="space-y-2">
-                <Label for="name">Shop Name *</Label>
-                <Input
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    required
-                    placeholder="e.g., Amani Botanics"
-                />
-                <p v-if="form.errors.name" class="text-xs text-red-500">{{ form.errors.name }}</p>
+        <form @submit.prevent="submitForm">
+            <div class="inputs-group-wrapper">
+                <div class="inputs-group">
+                    <Label for="name">Shop Name *</Label>
+                    <Input
+                        id="name"
+                        v-model="form.name"
+                        type="text"
+                        required
+                        placeholder="e.g., Amani Botanics"
+                    />
+                    <p v-if="form.errors.name" class="text-xs text-red-500">{{ form.errors.name }}</p>
+                </div>
+
+                <div class="inputs-group">
+                    <Label for="shop_category_id">Category</Label>
+                    <select
+                        id="shop_category_id"
+                        v-model="form.shop_category_id"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                    >
+                        <option :value="null">Select a category</option>
+                        <option v-for="category in categories" :key="category.id" :value="category.id">
+                            {{ category.name }}
+                        </option>
+                    </select>
+                    <p v-if="form.errors.shop_category_id" class="text-xs text-red-500">{{ form.errors.shop_category_id }}</p>
+                </div>
             </div>
 
-            <!-- Category -->
-            <div class="space-y-2">
-                <Label for="shop_category_id">Category</Label>
-                <select
-                    id="shop_category_id"
-                    v-model="form.shop_category_id"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                >
-                    <option :value="null">Select a category</option>
-                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                        {{ category.name }}
-                    </option>
-                </select>
-                <p v-if="form.errors.shop_category_id" class="text-xs text-red-500">{{ form.errors.shop_category_id }}</p>
-            </div>
+            <div class="inputs-group-wrapper">
+                <div class="inputs-group">
+                    <Label for="contact_email">Contact Email</Label>
+                    <Input
+                        id="contact_email"
+                        v-model="form.contact_email"
+                        type="email"
+                        placeholder="shop@example.com"
+                    />
+                    <p v-if="form.errors.contact_email" class="text-xs text-red-500">{{ form.errors.contact_email }}</p>
+                </div>
 
-            <!-- Description -->
-            <div class="space-y-2">
+                <div class="inputs-group">
+                    <Label for="contact_phone">Contact Phone</Label>
+                    <Input
+                        id="contact_phone"
+                        v-model="form.contact_phone"
+                        type="tel"
+                        placeholder="+254 XXX XXX XXX"
+                    />
+                    <p v-if="form.errors.contact_phone" class="text-xs text-red-500">{{ form.errors.contact_phone }}</p>
+                </div>
+            </div>
+            
+            <div class="inputs-group">
                 <Label for="description">Description</Label>
                 <Textarea
                     id="description"
@@ -146,94 +169,73 @@ const submitForm = () => {
                 <p v-if="form.errors.description" class="text-xs text-red-500">{{ form.errors.description }}</p>
             </div>
 
-            <!-- Contact Email -->
-            <div class="space-y-2">
-                <Label for="contact_email">Contact Email</Label>
-                <Input
-                    id="contact_email"
-                    v-model="form.contact_email"
-                    type="email"
-                    placeholder="shop@example.com"
-                />
-                <p v-if="form.errors.contact_email" class="text-xs text-red-500">{{ form.errors.contact_email }}</p>
-            </div>
-
-            <!-- Contact Phone -->
-            <div class="space-y-2">
-                <Label for="contact_phone">Contact Phone</Label>
-                <Input
-                    id="contact_phone"
-                    v-model="form.contact_phone"
-                    type="tel"
-                    placeholder="+254 XXX XXX XXX"
-                />
-                <p v-if="form.errors.contact_phone" class="text-xs text-red-500">{{ form.errors.contact_phone }}</p>
-            </div>
-
-            <!-- Logo Upload -->
-            <div class="space-y-2">
-                <Label>Shop Logo</Label>
-                <div class="flex items-center gap-4">
+            <div class="inputs-group-wrapper">
+                <div class="inputs-group">
+                    <Label>Cover Image</Label>
                     <div class="relative">
-                        <div class="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
-                            <img v-if="logoPreview" :src="logoPreview" class="w-full h-full object-cover" />
-                            <ImagePlus v-else class="w-8 h-8 text-gray-400" />
+                        <div class="h-40 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
+                            <img v-if="coverPreview" :src="coverPreview" class="w-full h-full object-cover" />
+                            <div v-else class="text-center">
+                                <ImagePlus class="w-10 h-10 text-gray-400 mx-auto mb-2" />
+                                <p class="text-sm text-gray-500">Click to upload cover image</p>
+                            </div>
                         </div>
                         <button
-                            v-if="logoPreview"
+                            v-if="coverPreview"
                             type="button"
-                            @click="removeLogo"
+                            @click="removeCover"
                             class="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
                         >
                             <X class="w-3 h-3" />
                         </button>
-                    </div>
-                    <div>
-                        <label class="cursor-pointer">
-                            <span class="text-sm text-gray-600 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 inline-block">
-                                Change Logo
-                            </span>
-                            <input type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
+                        <label class="absolute inset-0 cursor-pointer">
+                            <input type="file" accept="image/*" class="hidden" @change="handleCoverChange" />
                         </label>
-                        <p class="text-xs text-gray-400 mt-1">PNG, JPG up to 2MB</p>
                     </div>
+                    <p v-if="form.errors.cover" class="text-xs text-red-500">{{ form.errors.cover }}</p>
                 </div>
-                <p v-if="form.errors.logo" class="text-xs text-red-500">{{ form.errors.logo }}</p>
-            </div>
 
-            <!-- Cover Image Upload -->
-            <div class="space-y-2">
-                <Label>Cover Image</Label>
-                <div class="relative">
-                    <div class="h-40 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
-                        <img v-if="coverPreview" :src="coverPreview" class="w-full h-full object-cover" />
-                        <div v-else class="text-center">
-                            <ImagePlus class="w-10 h-10 text-gray-400 mx-auto mb-2" />
-                            <p class="text-sm text-gray-500">Click to upload cover image</p>
+                <div class="inputs-group">
+                    <Label>Shop Logo</Label>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <div class="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
+                                <img v-if="logoPreview" :src="logoPreview" class="w-full h-full object-cover" />
+                                <ImagePlus v-else class="w-8 h-8 text-gray-400" />
+                            </div>
+                            <button
+                                v-if="logoPreview"
+                                type="button"
+                                @click="removeLogo"
+                                class="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                            >
+                                <X class="w-3 h-3" />
+                            </button>
+                        </div>
+                        <div>
+                            <label class="cursor-pointer">
+                                <span class="text-sm text-gray-600 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 inline-block">
+                                    Change Logo
+                                </span>
+                                <input type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
+                            </label>
+                            <p class="text-xs text-gray-400 mt-1">PNG, JPG up to 2MB</p>
                         </div>
                     </div>
-                    <button
-                        v-if="coverPreview"
-                        type="button"
-                        @click="removeCover"
-                        class="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-                    >
-                        <X class="w-3 h-3" />
-                    </button>
-                    <label class="absolute inset-0 cursor-pointer">
-                        <input type="file" accept="image/*" class="hidden" @change="handleCoverChange" />
-                    </label>
+                    <p v-if="form.errors.logo" class="text-xs text-red-500">{{ form.errors.logo }}</p>
                 </div>
-                <p v-if="form.errors.cover" class="text-xs text-red-500">{{ form.errors.cover }}</p>
+
+                
             </div>
 
             <!-- Actions -->
-            <div class="flex justify-end gap-3 pt-4">
-                <Button type="button" variant="outline" @click="router.visit('/shops')">
-                    Cancel
-                </Button>
+            <div class="flex gap-3 pt-4">
                 <Button type="submit" :disabled="form.processing">
                     {{ form.processing ? 'Saving...' : 'Update Shop' }}
+                </Button>
+                
+                <Button type="button" variant="outline" @click="router.visit('/shops')">
+                    Cancel
                 </Button>
             </div>
         </form>

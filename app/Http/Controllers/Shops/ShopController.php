@@ -120,9 +120,24 @@ class ShopController extends Controller
         $shop->load('category');
 
         $categories = ShopCategory::select('id', 'name')->get();
+
+        $shop_data = [
+            'id' => $shop->id,
+            'name' => $shop->name,
+            'description' => $shop->description,
+            'logo_image' => $shop->logo_url_full,  // Use the accessor for full URL
+            'cover_image' => $shop->cover_url_full,  // Use the accessor for full URL
+            'contact_email' => $shop->contact_email,
+            'contact_phone' => $shop->contact_phone,
+            'is_active' => $shop->is_active,
+            'category' => $shop->category ? [
+                'id' => $shop->category->id,
+                'name' => $shop->category->name,
+            ] : null,
+        ];
         
         return inertia('shops/Edit', [
-            'shop' => $shop,
+            'shop' => $shop_data,
             'categories' => $categories
         ]);
     }
@@ -146,7 +161,10 @@ class ShopController extends Controller
         if ($request->hasFile('logo')) {
             // Delete old logo if exists
             if ($shop->logo_image) {
-                Storage::disk('public')->delete($shop->logo_image);
+                $old_path = "shops/logos/{$shop->logo_image}";
+                if (Storage::disk('public')->exists($old_path)) {
+                    Storage::disk('public')->delete($old_path);
+                }
             }
             $logo_path = $this->uploadImage($request->file('logo'), 'logo', $shop);
             $validated['logo_image'] = $logo_path;
@@ -156,7 +174,10 @@ class ShopController extends Controller
         if ($request->hasFile('cover')) {
             // Delete old cover if exists
             if ($shop->cover_image) {
-                Storage::disk('public')->delete($shop->cover_image);
+                $old_path = "shops/covers/{$shop->cover_image}";
+                if (Storage::disk('public')->exists($old_path)) {
+                    Storage::disk('public')->delete($old_path);
+                }
             }
             $cover_path = $this->uploadImage($request->file('cover'), 'cover', $shop);
             $validated['cover_image'] = $cover_path;
@@ -177,14 +198,8 @@ class ShopController extends Controller
             abort(403);
         }
         
-        // Delete associated images
-        if ($shop->logo_image) {
-            Storage::disk('public')->delete($shop->logo_image);
-        }
-
-        if ($shop->cover_image) {
-            Storage::disk('public')->delete($shop->cover_image);
-        }
+        // Delete associated images using the model method
+        $shop->deleteImages();
         
         $shop->delete();
 
