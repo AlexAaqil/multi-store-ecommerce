@@ -2,6 +2,7 @@
 ```php
 Schema::create('users', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('name', 120);
     $table->string('email')->unique();
     $table->unsignedTinyInteger('role')->default(3);
@@ -30,11 +31,21 @@ Schema::create('addresses', function (Blueprint $table) {
     $table->timestamps();
 });
 
+Schema::create('shop_categories', function (Blueprint $table) {
+    $table->id();
+    $table->uuid()->unique();
+    $table->string('name')->unique();
+    $table->string('slug')->unique();
+    $table->timestamps();
+});
+
 Schema::create('shops', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('name', 150);
+    $table->string('slug')->unique();
+    $table->string('custom_slug')->nullable()->unique();
     $table->text('description')->nullable();
-    $table->string('category', 80)->nullable();
     $table->string('logo_url')->nullable();
     $table->string('cover_url')->nullable();
     $table->string('contact_email')->nullable();
@@ -42,6 +53,7 @@ Schema::create('shops', function (Blueprint $table) {
     $table->boolean('is_active')->default(true);
     $table->boolean('is_verified')->default(false);
     $table->json('settings')->nullable(); // Store shop preferences
+    $table->foreignId('shop_category_id')->nullable()->constrained('shop_categories')->setNullOnDelete();
     $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
     $table->softDeletes();
     $table->timestamps();
@@ -53,6 +65,7 @@ Schema::create('shops', function (Blueprint $table) {
 
 Schema::create('product_categories', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('name', 100)->unique();
     $table->string('slug')->unique();
     $table->text('description')->nullable();
@@ -70,6 +83,7 @@ Schema::create('product_categories', function (Blueprint $table) {
 
 Schema::create('products', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('name', 200);
     $table->string('slug')->unique();
     $table->string('sku')->unique();
@@ -150,6 +164,7 @@ Schema::create('cart_items', function (Blueprint $table) {
 
 Schema::create('orders', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('order_number')->unique();
     $table->decimal('subtotal', 12, 2);
     $table->decimal('discount_amount', 12, 2)->default(0);
@@ -210,6 +225,7 @@ Schema::create('order_items', function (Blueprint $table) {
 
 Schema::create('payments', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('transaction_id')->unique(); // From payment gateway
     $table->decimal('amount', 12, 2);
     $table->unsignedTinyInteger('type')->default(0);
@@ -225,6 +241,7 @@ Schema::create('payments', function (Blueprint $table) {
 
 Schema::create('refunds', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->decimal('amount', 12, 2);
     $table->text('reason');
     $table->unsignedTinyInteger('status')->default(0);
@@ -235,6 +252,7 @@ Schema::create('refunds', function (Blueprint $table) {
 
 Schema::create('shipments', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('tracking_number')->nullable();
     $table->string('carrier', 50);
     $table->string('service_level')->nullable(); // Express, Standard, etc.
@@ -251,6 +269,7 @@ Schema::create('shipments', function (Blueprint $table) {
 
 Schema::create('vendor_payouts', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->decimal('amount', 12, 2);
     $table->decimal('platform_fee', 12, 2)->default(0);
     $table->decimal('net_amount', 12, 2);
@@ -268,6 +287,7 @@ Schema::create('vendor_payouts', function (Blueprint $table) {
 
 Schema::create('coupons', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('code')->unique();
     $table->string('name');
     $table->unsignedTinyInteger('type')->default(0);
@@ -287,6 +307,7 @@ Schema::create('coupons', function (Blueprint $table) {
 
 Schema::create('coupon_redemptions', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->foreignId('coupon_id')->constrained('coupons')->cascadeOnDelete();
     $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
     $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -296,6 +317,7 @@ Schema::create('coupon_redemptions', function (Blueprint $table) {
 
 Schema::create('discounts', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('name');
     $table->unsignedTinyInteger('type')->default(0);
     $table->decimal('value', 12, 2);
@@ -324,6 +346,7 @@ Schema::create('discounts', function (Blueprint $table) {
 
 Schema::create('reviews', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->integer('rating')->check('rating BETWEEN 1 AND 5');
     $table->text('comment')->nullable();
     $table->json('images')->nullable();
@@ -342,6 +365,7 @@ Schema::create('reviews', function (Blueprint $table) {
 
 Schema::create('posts', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->text('content');
     $table->json('media_urls')->nullable();
     $table->integer('likes_count')->default(0);
@@ -364,6 +388,7 @@ Schema::create('post_likes', function (Blueprint $table) {
 
 Schema::create('comments', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->text('content');
     $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
     $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -387,6 +412,7 @@ Schema::create('wishlists', function (Blueprint $table) {
 
 Schema::create('audit_logs', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('action', 100);
     $table->string('entity_type', 50);
     $table->unsignedBigInteger('entity_id')->nullable();
@@ -403,6 +429,7 @@ Schema::create('audit_logs', function (Blueprint $table) {
 
 Schema::create('notifications', function (Blueprint $table) {
     $table->id();
+    $table->uuid()->unique();
     $table->string('type'); // order_created, payment_received, etc.
     $table->string('title');
     $table->text('content');
