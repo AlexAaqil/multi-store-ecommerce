@@ -1,0 +1,73 @@
+.shop-card {
+    @apply bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow;
+
+    .shop-card-images {
+        @apply relative mb-4;
+        .shop-card-cover {
+            @apply h-24 bg-gray-100 flex items-center justify-center;
+
+            img {
+                @apply object-cover h-[100%] w-[100%];
+            }
+        }
+
+        .shop-card-logo {
+            @apply absolute h-10 w-10 left-4 -bottom-4 bg-gray-100 flex items-center justify-center text-xl border border-gray-200 rounded-[4px] p-1;
+
+            img {
+                @apply object-cover h-[100%] w-[100%];
+            }
+        }
+    }
+
+    .shop-card-body {
+        @apply p-4;
+
+        .shop-card-name {
+            @apply font-medium text-gray-900;
+        }
+
+        .shop-card-category {
+            @apply text-xs text-gray-500 mt-1;
+        }
+
+        .shop-card-description {
+            @apply text-sm text-gray-600 mt-3 line-clamp-2;
+        }
+
+        .shop-card-contact-info {
+            @apply mt-3 space-y-1;
+             .info {
+                @apply text-xs text-gray-500 flex items-center gap-1;
+             }
+        }
+
+        .shop-card-meta {
+            @apply flex justify-between mt-4;
+
+            .shop-rating,
+            .badge {
+                @apply text-xs text-gray-500;
+            }
+
+            .shop-rating {
+                span {
+                    @apply text-orange-400;
+                }
+            }
+        }
+    }
+}
+
+.shop-card-app {
+    .shop-card-meta {
+        @apply mt-3 pt-3 border-t border-gray-100 flex justify-between items-center;
+        .date {
+            @apply text-xs text-gray-400
+        }
+
+        .actions {
+            @apply flex gap-2;
+        }
+    }
+}

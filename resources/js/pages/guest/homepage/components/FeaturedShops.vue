@@ -1,35 +1,10 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { inject } from 'vue';
+import type { Shop } from '@/types/shop';
+import Button from '@/components/ui/button/Button.vue';
 
-interface Shop {
-    id: number;
-    name: string;
-    category: string;
-    rating: number;
-    reviews: number;
-    icon_image: string;
-    cover_image?: string;
-    status: string;
-}
-
-const featuredShops = [
-    { 
-        id: 1, 
-        name: 'Amani Botanics', 
-        category: 'Beauty & Wellness', 
-        rating: 4.9, 
-        reviews: 312, 
-        icon: 'https://1000logos.net/wp-content/uploads/2016/10/Apple-Logo.png',
-        coverImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0a72M_H_B2q5TiIQSmOpjC0x2JuweIV4d4Q&s',
-        coverColor: '#f0ede8', 
-        logoBg: '#eaf4ef', 
-        status: 'Open', 
-        statusClass: 'badge-green' 
-    },
-    { id: 2, name: 'Zuri Threads', category: 'Fashion & Style', rating: 4.7, reviews: 187, icon: '👗', coverColor: '#fdf0e8', logoBg: '#fdf0e8', status: 'Open', statusClass: 'badge-green' },
-    { id: 3, name: 'TechNairobi', category: 'Electronics', rating: 4.8, reviews: 524, icon: '📱', coverColor: '#e8f0f8', logoBg: '#e8f0f8', status: 'Busy', statusClass: 'badge-gray' },
-    { id: 4, name: "Mama's Pantry", category: 'Food & Groceries', rating: 4.9, reviews: 891, icon: '🍯', coverColor: '#f5f0e8', logoBg: '#f5f0e8', status: 'Open', statusClass: 'badge-green' }
-];
+const featured_shops = inject<Shop[]>('featured_shops', []);
 </script>
 
 <template>
@@ -39,33 +14,48 @@ const featuredShops = [
             <Link href="/shops" class="section-link">View all →</Link>
         </div>
         
-        <div class="shops_wrapper" style="margin-bottom: 28px">
+        <!-- Only show if shops exist -->
+        <div v-if="featured_shops.length > 0" class="shops-wrapper">
             <div 
-                v-for="shop in featuredShops" 
+                v-for="shop in featured_shops" 
                 :key="shop.id"
                 class="shop-card"
-                @click="$inertia.visit(`/shop/${shop.id}`)"
+                @click="$inertia.visit(`/shop/${shop.slug}`)"
             >
                 <div class="shop-card-images">
-                    <div class="shop-card-cover" :style="{ background: shop.coverColor }">
-                        <img :src=shop.coverImage alt="Shop cover Image">
+                    <div class="shop-card-cover">
+                        <img :src="shop.cover_image" alt="Shop cover Image">
                     </div>
 
-                    <div class="shop-card-logo" :style="{ background: shop.logoBg }">
-                        <img :src=shop.icon alt="Shop cover Image">
+                    <div class="shop-card-logo">
+                        <img :src="shop.logo_image" alt="Shop logo">
                     </div>
                 </div>
 
                 <div class="shop-card-body">
                     <h3 class="shop-card-name">{{ shop.name }}</h3>
-                    <p class="shop-card-category">{{ shop.category }}</p>
+                    <p class="shop-card-category">{{ shop.category || 'Uncategorized' }}</p>
                     <div class="shop-card-meta">
                         <div class="shop-rating">
-                            <span>★</span> {{ shop.rating }} · {{ shop.reviews }} reviews
+                            <span>★</span> {{ shop.rating }} · {{ shop.reviews_count }} reviews
                         </div>
-                        <span class="badge" :class="shop.statusClass">{{ shop.status }}</span>
+                        <span class="badge" :class="shop.status_class">{{ shop.status }}</span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else class="shops-wrapper-empty-state">
+            <div class="content">
+                <div class="icon">🏪</div>
+                <h3 class="title">No shops available yet</h3>
+                <p class="description">
+                    Be the first to create a shop and start selling!
+                </p>
+                <Link href="/shops/create">
+                    <Button>Create Your Shop</Button>
+                </Link>
             </div>
         </div>
     </section>

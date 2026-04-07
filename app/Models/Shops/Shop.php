@@ -81,52 +81,32 @@ class Shop extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(ShopCategory::class);
+        return $this->belongsTo(ShopCategory::class, 'shop_category_id');
     }
 
     public function getLogoUrlFullAttribute(): string
     {
-        if ($this->logo_image && Storage::disk('public')->exists(str_replace('/storage', '', $this->logo_image))) {
-            return asset($this->logo_image);
+        if (!$this->logo_image) {
+            return asset('images/default-shop-logo.png');
         }
-        
-        return asset('images/default-shop-logo.png');
+
+        return $this->getImageUrl('logo');
     }
 
     public function getCoverUrlFullAttribute(): string
     {
-        if ($this->cover_image && Storage::disk('public')->exists(str_replace('/storage', '', $this->cover_image))) {
-            return asset($this->cover_image);
+        if (!$this->logo_image) {
+            return asset('images/default-shop-logo.png');
         }
+
+        return $this->getImageUrl('cover');
+    }
+
+    private function getImageUrl(string $type): string
+    {
+        $path = $type === 'logo' ? 'shops/logos' : 'shops/covers';
+        $image = $type === 'logo' ? $this->logo_image : $this->cover_image;
         
-        return asset('images/default-shop-cover.jpg');
-    }
-
-    public function getLogoUrlAttribute($value): ?string
-    {
-        if (!$value) {
-            return null;
-        }
-        
-        return $value;
-    }
-
-    public function getCoverUrlAttribute($value): ?string
-    {
-        if (!$value) {
-            return null;
-        }
-        
-        return $value;
-    }
-
-    public function hasLogo(): bool
-    {
-        return !empty($this->logo_image) && Storage::disk('public')->exists(str_replace('/storage', '', $this->logo_image));
-    }
-
-    public function hasCover(): bool
-    {
-        return !empty($this->cover_image) && Storage::disk('public')->exists(str_replace('/storage', '', $this->cover_image));
+        return asset("storage/{$path}/{$image}");
     }
 }

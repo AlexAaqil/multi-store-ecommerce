@@ -55,57 +55,23 @@
     }
 
     .FeaturedShops {
-        .shops_wrapper {
+        .shops-wrapper {
             @apply grid grid-cols-1 lg:grid-cols-4 gap-4;
+        }
 
-            .shop-card {
-                @apply bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow;
+        .shops-wrapper-empty-state {
+            @apply bg-white border border-gray-200 rounded-xl py-[48px] px-[24px] text-center;
 
-                .shop-card-images {
-                    @apply relative mb-4;
-                    .shop-card-cover {
-                        @apply h-24 bg-gray-100 flex items-center justify-center;
+            .icon {
+                @apply text-[64px] mb-[16px];
+            }
 
-                        img {
-                            @apply object-cover h-[100%] w-[100%];
-                        }
-                    }
+            .title {
+                @apply text-[18px] font-semibold mb-[8px];
+            }
 
-                    .shop-card-logo {
-                        @apply absolute h-10 w-10 left-4 -bottom-4 flex items-center justify-center text-xl border border-white rounded-[4px] p-1;
-
-                        img {
-                            @apply object-cover h-[100%] w-[100%];
-                        }
-                    }
-                }
-
-                .shop-card-body {
-                    @apply p-4;
-
-                    .shop-card-name {
-                        @apply font-medium text-gray-900;
-                    }
-
-                    .shop-card-category {
-                        @apply text-xs text-gray-500 mt-1;
-                    }
-
-                    .shop-card-meta {
-                        @apply flex justify-between mt-4;
-
-                        .shop-rating,
-                        .badge {
-                            @apply text-xs text-gray-500;
-                        }
-
-                        .shop-rating {
-                            span {
-                                @apply text-orange-400;
-                            }
-                        }
-                    }
-                }
+            .description {
+                @apply text-[14px] mb-[24px] text-gray-600;
             }
         }
     }

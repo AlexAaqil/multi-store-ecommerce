@@ -9,8 +9,8 @@ interface Shop {
     name: string;
     description: string | null;
     category: string | null;
-    logo_url: string | null;
-    cover_url: string | null;
+    logo_image: string;
+    cover_image: string;
     contact_email: string | null;
     contact_phone: string | null;
     is_active: boolean;
@@ -60,118 +60,92 @@ const deleteShop = (id: number) => {
             <div
                 v-for="shop in shops.data"
                 :key="shop.id"
-                class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
+                class="shop-card shop-card-app"
             >
-                <!-- Cover Image -->
-                <div class="h-32 bg-gradient-to-r from-gray-100 to-gray-200 relative">
-                    <img
-                        v-if="shop.cover_url"
-                        :src="shop.cover_url"
-                        :alt="shop.name"
-                        class="w-full h-full object-cover"
-                    />
-                    <div v-else class="w-full h-full flex items-center justify-center text-4xl">
-                        🏪
+                <div class="shop-card-images">
+                    <div class="shop-card-cover">
+                        <img :src="shop.cover_image" alt="Shop cover Image">
+                        <div class="absolute top-3 right-3">
+                            <span
+                                :class="[
+                                    'px-2 py-1 rounded-full text-xs font-medium',
+                                    shop.is_active
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-gray-100 text-gray-500'
+                                ]"
+                            >
+                                {{ shop.is_active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </div>
                     </div>
-                    
-                    <!-- Status Badge -->
-                    <div class="absolute top-3 right-3">
-                        <span
-                            :class="[
-                                'px-2 py-1 rounded-full text-xs font-medium',
-                                shop.is_active
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-gray-100 text-gray-500'
-                            ]"
-                        >
-                            {{ shop.is_active ? 'Active' : 'Inactive' }}
-                        </span>
+
+                    <div class="shop-card-logo">
+                        <img :src="shop.logo_image" alt="Shop logo">
                     </div>
                 </div>
 
-                <!-- Logo & Info -->
-                <div class="p-4">
-                    <div class="flex items-start gap-3">
-                        <!-- Logo -->
-                        <div class="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center text-2xl -mt-8 border-2 border-white shadow-sm overflow-hidden">
-                            <img
-                                v-if="shop.logo_url"
-                                :src="shop.logo_url"
-                                :alt="shop.name"
-                                class="w-full h-full object-cover"
-                            />
-                            <Store v-else class="w-6 h-6 text-gray-400" />
-                        </div>
-
-                        <!-- Shop Name & Category -->
-                        <div class="flex-1">
-                            <h3 class="font-semibold text-lg">{{ shop.name }}</h3>
-                            <p class="text-xs text-gray-400">{{ shop.category || 'Uncategorized' }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <p class="text-sm text-gray-600 mt-3 line-clamp-2">
-                        {{ shop.description || 'No description provided' }}
-                    </p>
-
-                    <!-- Contact Info -->
-                    <div class="mt-3 space-y-1">
-                        <p v-if="shop.contact_email" class="text-xs text-gray-500 flex items-center gap-1">
-                            📧 {{ shop.contact_email }}
+                <div class="shop-card-body">
+                    <div class="shop-card-body">
+                        <h3 class="shop-card-name">{{ shop.name }}</h3>
+                        <p class="shop-card-category">{{ shop.category || 'Uncategorized' }}</p>
+                        <p class="shop-card-description">
+                            {{ shop.description || 'No description provided' }}
                         </p>
-                        <p v-if="shop.contact_phone" class="text-xs text-gray-500 flex items-center gap-1">
-                            📞 {{ shop.contact_phone }}
-                        </p>
-                    </div>
 
-                    <!-- Meta Info -->
-                    <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-                        <div class="text-xs text-gray-400">
-                            Created {{ new Date(shop.created_at).toLocaleDateString() }}
+                        <div class="contact-info">
+                            <p v-if="shop.contact_email" class="info">
+                                📧 {{ shop.contact_email }}
+                            </p>
+                            <p v-if="shop.contact_phone" class="info">
+                                📞 {{ shop.contact_phone }}
+                            </p>
                         </div>
-                        
-                        <!-- Actions -->
-                        <div class="flex gap-2">
-                            <!-- Edit -->
-                            <a
-                                :href="`/shops/${shop.id}/edit`"
-                                class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                                title="Edit Shop"
-                            >
-                                <Pencil class="w-4 h-4 text-gray-500" />
-                            </a>
 
-                            <!-- Delete -->
-                            <AlertDialog>
-                                <AlertDialogTrigger as-child>
-                                    <button
-                                        class="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
-                                        title="Delete Shop"
-                                    >
-                                        <Trash2 class="w-4 h-4 text-red-500" />
-                                    </button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Delete Shop?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Are you sure you want to delete "{{ shop.name }}"? 
-                                            This action cannot be undone and will delete all 
-                                            products and data associated with this shop.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            @click="deleteShop(shop.id)"
-                                            class="bg-red-600 hover:bg-red-700"
+                        <div class="shop-card-meta">
+                            <div class="date">
+                                Created {{ new Date(shop.created_at).toLocaleDateString() }}
+                            </div>
+                            
+                            <div class="actions">
+                                <a
+                                    :href="`/shops/${shop.id}/edit`"
+                                    class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                                    title="Edit Shop"
+                                >
+                                    <Pencil class="w-4 h-4 text-gray-500" />
+                                </a>
+
+                                <!-- Delete -->
+                                <AlertDialog>
+                                    <AlertDialogTrigger as-child>
+                                        <button
+                                            class="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                                            title="Delete Shop"
                                         >
-                                            Delete
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                                            <Trash2 class="w-4 h-4 text-red-500" />
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Delete Shop?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Are you sure you want to delete "{{ shop.name }}"? 
+                                                This action cannot be undone and will delete all 
+                                                products and data associated with this shop.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                @click="deleteShop(shop.id)"
+                                                class="bg-red-600 hover:bg-red-700"
+                                            >
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
                         </div>
                     </div>
                 </div>

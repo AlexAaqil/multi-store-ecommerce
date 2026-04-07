@@ -18,14 +18,14 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('custom_slug')->nullable()->unique();
             $table->text('description')->nullable();
-            $table->string('category', 80)->nullable();
-            $table->string('logo_url')->nullable();
-            $table->string('cover_url')->nullable();
+            $table->string('logo_image')->nullable();
+            $table->string('cover_image')->nullable();
             $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_verified')->default(false);
             $table->json('settings')->nullable(); // Store shop preferences
+            $table->foreignId('shop_category_id')->nullable()->constrained('shop_categories')->nullOnDelete();
             $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();

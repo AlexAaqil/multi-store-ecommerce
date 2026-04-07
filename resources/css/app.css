@@ -21,8 +21,7 @@
     @apply py-4 px-4;
 }
 
-@import "./components/category-pills.css";
-@import "./components/product-card.css";
+@import "./components/index";
 
 @import "./pages/homepage";
 @import "./pages/dealspage";

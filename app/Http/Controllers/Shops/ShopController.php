@@ -24,7 +24,27 @@ class ShopController extends Controller
         $shops = $this->user()->shops()
             ->with('category')
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->through(function ($shop) {
+                return [
+                    'id' => $shop->id,
+                    'name' => $shop->name,
+                    'slug' => $shop->public_slug,
+                    'category' => $shop->category?->name,
+                    'description' => $shop->description,
+                    'contact_email' => $shop->contact_email,
+                    'contact_phone' => $shop->contact_phone,
+                    'rating' => 4.9, // TODO Replace with actual rating when available
+                    'reviews_count' => 312, // TODO Replace with actual count when available
+                    'logo_image' => $shop->logo_url_full,
+                    'cover_image' => $shop->cover_url_full,
+                    'status' => $shop->is_active ? 'Open' : 'Closed',
+                    'status_class' => $shop->is_active ? 'badge-green' : 'badge-gray',
+                    'is_active' => $shop->is_active,
+                    'is_verified' => $shop->is_verified,
+                    'created_at' => $shop->created_at
+                ];
+            });
 
         return inertia('shops/Index', [
             'shops' => $shops,
