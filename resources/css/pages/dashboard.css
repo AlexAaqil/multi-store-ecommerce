@@ -1,0 +1,107 @@
+.Dashboard {
+    section {
+        @apply mb-6;
+    }
+
+    .Hero {
+        .hero-wrapper {
+            .hero-title {
+                @apply font-serif text-2xl md:text-3xl font-normal;
+            }
+
+            .hero-salutation {
+                @apply text-sm text-gray-500 mt-1;
+            }
+        }
+    }
+
+    .Stats {
+        .stats-wrapper {
+            @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
+
+            .stat-card {
+                @apply bg-white border border-gray-200 rounded-xl p-5 transition-shadow hover:shadow-sm;
+
+                .label {
+                    @apply text-xs font-medium text-gray-400 uppercase tracking-wider mb-2;
+                }
+
+                .value {
+                    @apply font-serif text-2xl md:text-3xl mb-2;
+                }
+
+                .extras {
+                    @apply text-xs;
+
+                    &.up-arrow {
+                        @apply text-green-600;
+                    }
+
+                    &.down-arrow {
+                        @apply text-red-600;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.SellerDashboard {
+    .OrdersStats {
+        @apply grid lg:grid-cols-2 gap-4;
+
+        .orders-wrapper {
+            @apply bg-white border border-gray-200 rounded-xl overflow-hidden;
+
+            .header {
+                @apply flex items-center justify-between px-5 py-4 border-b border-gray-100;
+
+                .title {
+                    @apply font-medium text-sm;
+                }
+
+                .stat {
+                    @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700;
+                }
+            }
+
+            .body{
+                table {
+                    @apply w-full;
+
+                    thead th {
+                        @apply text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100;
+                    }
+
+                    tbody td {
+                        @apply px-5 py-3 text-sm border-b border-gray-50;
+                    }
+
+                    tbody tr:last-child td {
+                        @apply border-b-0;
+                    }
+
+                    tbody tr:hover {
+                        @apply bg-gray-50;
+                    }
+                }
+            }
+        }
+
+        .sales_stats {
+            @apply bg-white border border-gray-200 rounded-xl p-5;
+            
+            .mini-chart {
+                @apply h-16 flex items-end gap-1 mt-3;
+
+                .bar {
+                    @apply flex-1 bg-gray-200 rounded-t transition-all duration-300;
+
+                    &.highlight {
+                        @apply bg-gray-900;
+                    }
+                }
+            }
+        }
+    }
+}

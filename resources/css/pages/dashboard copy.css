@@ -1,0 +1,346 @@
+.Dashboard {
+    section {
+        @apply mb-6;
+    }
+    
+    .Hero {
+        .hero-wrapper {
+            .hero-title {
+                @apply font-serif text-2xl md:text-3xl font-normal;
+            }
+
+            .hero-salutation {
+                @apply text-sm text-gray-500 mt-1;
+            }
+        }
+    }
+
+    .Stats {
+        .stats-wrapper {
+            @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
+
+            .stat-card {
+                @apply bg-white border border-gray-200 rounded-xl p-5 transition-shadow hover:shadow-sm;
+
+                .label {
+                    @apply text-xs font-medium text-gray-400 uppercase tracking-wider mb-2;
+                }
+
+                .value {
+                    @apply font-serif text-2xl md:text-3xl mb-2;
+                }
+
+                .extras {
+                    @apply text-xs;
+
+                    &.up-arrow {
+                        @apply text-green-600;
+                    }
+
+                    &.down-arrow {
+                        @apply text-red-600;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.SellerDashboard-bak {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 py-8;
+
+    /* Dashboard Header */
+    .dash-header {
+        @apply flex items-center justify-between mb-6;
+    }
+
+    /* Tabs */
+    .inner-tabs {
+        @apply flex gap-1 mb-6 border-b border-gray-200;
+
+        .inner-tab {
+            @apply px-4 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors border-b-2 border-transparent -mb-px;
+
+            &.active {
+                @apply text-gray-900 border-gray-900 font-medium;
+            }
+        }
+    }
+
+    /* Stats Cards Grid */
+    .stats-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
+    }
+
+    .stat-card {
+        @apply bg-white border border-gray-200 rounded-xl p-5 transition-shadow hover:shadow-sm;
+
+        .stat-label {
+            @apply text-xs font-medium text-gray-400 uppercase tracking-wider mb-2;
+        }
+
+        .stat-value {
+            @apply font-serif text-2xl md:text-3xl mb-2;
+        }
+
+        .stat-change {
+            @apply text-xs;
+
+            &.up {
+                @apply text-green-600;
+            }
+
+            &.dn {
+                @apply text-red-600;
+            }
+        }
+    }
+
+    /* Tables */
+    .table-wrap {
+        @apply bg-white border border-gray-200 rounded-xl overflow-hidden;
+
+        .table-header {
+            @apply flex items-center justify-between px-5 py-4 border-b border-gray-100;
+
+            .table-title {
+                @apply font-medium text-sm;
+            }
+        }
+
+        table {
+            @apply w-full;
+
+            thead th {
+                @apply text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100;
+            }
+
+            tbody td {
+                @apply px-5 py-3 text-sm border-b border-gray-50;
+            }
+
+            tbody tr:last-child td {
+                @apply border-b-0;
+            }
+
+            tbody tr:hover {
+                @apply bg-gray-50;
+            }
+        }
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-white border border-gray-200 rounded-xl p-5;
+    }
+
+    /* Two Column Layout */
+    .two-col {
+        @apply grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5;
+    }
+
+    /* Grid layouts */
+    .grid-2 {
+        @apply grid grid-cols-1 lg:grid-cols-2 gap-5;
+    }
+
+    .grid-4 {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+    }
+
+    /* Mini Chart */
+    .mini-chart {
+        @apply h-16 flex items-end gap-1 mt-3;
+
+        .bar {
+            @apply flex-1 bg-gray-200 rounded-t transition-all duration-300;
+
+            &.highlight {
+                @apply bg-gray-900;
+            }
+        }
+    }
+
+    /* Badges */
+    .badge {
+        @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+
+        &.badge-green {
+            @apply bg-green-50 text-green-700;
+        }
+
+        &.badge-orange {
+            @apply bg-orange-50 text-orange-700;
+        }
+
+        &.badge-gray {
+            @apply bg-gray-100 text-gray-600;
+        }
+
+        &.badge-red {
+            @apply bg-red-50 text-red-700;
+        }
+    }
+
+    /* Buttons */
+    .btn {
+        @apply px-4 py-2 rounded-lg text-sm font-medium transition-all;
+
+        &.btn-dark {
+            @apply bg-gray-900 text-white hover:bg-gray-800;
+        }
+
+        &.btn-outline {
+            @apply border border-gray-200 text-gray-700 hover:bg-gray-50;
+        }
+    }
+
+    /* Form Elements */
+    .form-group {
+        @apply mb-4;
+
+        .form-label {
+            @apply block text-xs font-medium text-gray-500 mb-1.5;
+        }
+
+        .form-input {
+            @apply w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent;
+        }
+    }
+
+    /* Inventory Items */
+    .inv-item {
+        @apply flex items-center gap-3 py-3 border-b border-gray-100;
+
+        &:last-child {
+            @apply border-b-0;
+        }
+
+        .inv-icon {
+            @apply w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-lg flex-shrink-0;
+        }
+
+        .inv-name {
+            @apply font-medium text-sm;
+        }
+
+        .inv-stock {
+            @apply text-xs text-gray-400 mt-0.5;
+        }
+
+        .inv-bar-wrap {
+            @apply flex-1 h-1 bg-gray-100 rounded-full overflow-hidden;
+        }
+
+        .inv-bar {
+            @apply h-full bg-green-600 rounded-full;
+
+            &.low {
+                @apply bg-orange-500;
+            }
+        }
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+        @apply relative inline-block w-9 h-5;
+
+        input {
+            @apply opacity-0 w-0 h-0;
+        }
+
+        .toggle-slider {
+            @apply absolute inset-0 bg-gray-300 rounded-full cursor-pointer transition-all;
+
+            &::before {
+                content: '';
+                @apply absolute w-3.5 h-3.5 left-0.5 bottom-0.5 bg-white rounded-full transition-transform;
+            }
+        }
+
+        input:checked + .toggle-slider {
+            @apply bg-gray-900;
+
+            &::before {
+                @apply translate-x-4;
+            }
+        }
+    }
+
+    /* PRODUCTS TAB */
+    .ProductsTab {
+        .two-col {
+            @apply grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5;
+        }
+    }
+
+    /* INVENTORY TAB */
+    .InventoryTab {
+        .grid-2 {
+            @apply grid grid-cols-1 lg:grid-cols-2 gap-5;
+        }
+    }
+
+    /* DISCOUNTS TAB */
+    .DiscountsTab {
+        .two-col {
+            @apply grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5;
+        }
+    }
+
+    /* ANALYTICS TAB */
+    .AnalyticsTab {
+        .stats-grid {
+            @apply grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
+        }
+
+        .grid-2 {
+            @apply grid grid-cols-1 lg:grid-cols-2 gap-5;
+        }
+
+        .revenue-chart {
+            .mini-chart {
+                @apply h-20 mt-4 gap-1.5;
+
+                .bar {
+                    @apply flex-1 bg-gray-200 rounded-t;
+
+                    &.highlight {
+                        @apply bg-gray-900;
+                    }
+                }
+            }
+        }
+
+        .top-products {
+            .product-item {
+                @apply mb-3;
+
+                .product-bar {
+                    @apply h-1 bg-gray-100 rounded-full overflow-hidden;
+
+                    .bar-fill {
+                        @apply h-full bg-gray-900 rounded-full;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .SellerDashboard {
+        .dash-header {
+            @apply flex-col items-start gap-3;
+        }
+
+        .inner-tabs {
+            @apply overflow-x-auto;
+        }
+
+        .two-col, .grid-2 {
+            @apply grid-cols-1;
+        }
+    }
+}

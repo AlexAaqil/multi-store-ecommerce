@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, Store } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -36,6 +36,7 @@ import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
+import shops from '@/routes/shops';
 import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
@@ -49,29 +50,47 @@ const props = withDefaults(defineProps<Props>(), {
 const page = usePage();
 const auth = computed(() => page.props.auth);
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
+const user = computed(() => page.props.auth.user);
+const isAdmin = computed(() => user.value?.role_label === 'Admin');
+const isSuperAdmin = computed(() => user.value?.role_label === 'Super Admin');
+const isSeller = computed(() => user.value?.role_label === 'Seller');
 
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+const mainNavItems = computed(() =>{
+    const items = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    if (isSeller.value) {
+        items.push(
+            {
+                title: 'Shops',
+                href: shops.index(),
+                icon: Store,
+            },
+        );
+    }
+
+    return items;
+});
 
 const rightNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Repository',
+    //     href: 'https://github.com/laravel/vue-starter-kit',
+    //     icon: Folder,
+    // },
+    // {
+    //     title: 'Documentation',
+    //     href: 'https://laravel.com/docs/starter-kits#vue',
+    //     icon: BookOpen,
+    // },
 ];
 </script>
 
@@ -190,7 +209,7 @@ const rightNavItems: NavItem[] = [
 
                 <div class="ml-auto flex items-center space-x-2">
                     <div class="relative flex items-center space-x-1">
-                        <Button
+                        <!-- <Button
                             variant="ghost"
                             size="icon"
                             class="group h-9 w-9 cursor-pointer"
@@ -198,7 +217,7 @@ const rightNavItems: NavItem[] = [
                             <Search
                                 class="size-5 opacity-80 group-hover:opacity-100"
                             />
-                        </Button>
+                        </Button> -->
 
                         <div class="hidden space-x-1 lg:flex">
                             <template

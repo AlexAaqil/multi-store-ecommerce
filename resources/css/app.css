@@ -17,8 +17,14 @@
     }
 }
 
+.app_container {
+    @apply py-4 px-4;
+}
+
 @import "./components/category-pills.css";
 @import "./components/product-card.css";
 
 @import "./pages/homepage";
 @import "./pages/dealspage";
+
+@import "./pages/dashboard";

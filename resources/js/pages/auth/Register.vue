@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { Checkbox } from '@/components/ui/checkbox';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
@@ -16,6 +18,8 @@ defineOptions({
         description: 'Enter your details below to create your account',
     },
 });
+
+const selectedRole = ref<number>(3); // Default customer
 </script>
 
 <template>
@@ -27,6 +31,9 @@ defineOptions({
         v-slot="{ errors, processing }"
         class="flex flex-col gap-6"
     >
+        <!-- Hidden input to submit the role value -->
+        <input type="hidden" name="role" :value="selectedRole" />
+
         <div class="grid gap-6">
             <div class="grid gap-2">
                 <Label for="name">Name</Label>
@@ -81,6 +88,34 @@ defineOptions({
                     placeholder="Confirm password"
                 />
                 <InputError :message="errors.password_confirmation" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label>Account Type</Label>
+                
+                <div class="flex items-center gap-3">
+                    <input 
+                        type="radio" 
+                        id="customer"
+                        value="3"
+                        v-model="selectedRole"
+                        class="w-4 h-4"
+                    />
+                    <Label for="customer">Customer (Shop Only)</Label>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <input 
+                        type="radio" 
+                        id="seller" 
+                        value="2"
+                        v-model="selectedRole"
+                        class="w-4 h-4"
+                    />
+                    <Label for="seller">Seller (Sell Only)</Label>
+                </div>
+                
+                <InputError :message="errors.role" />
             </div>
 
             <Button

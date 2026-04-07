@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 
+interface Shop {
+    id: number;
+    name: string;
+    category: string;
+    rating: number;
+    reviews: number;
+    icon_image: string;
+    cover_image?: string;
+    status: string;
+}
+
 const featuredShops = [
     { 
         id: 1, 
