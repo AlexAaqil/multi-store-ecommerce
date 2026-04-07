@@ -46,14 +46,14 @@ Schema::create('shops', function (Blueprint $table) {
     $table->string('slug')->unique();
     $table->string('custom_slug')->nullable()->unique();
     $table->text('description')->nullable();
-    $table->string('logo_url')->nullable();
-    $table->string('cover_url')->nullable();
+    $table->string('logo_image')->nullable();
+    $table->string('cover_image')->nullable();
     $table->string('contact_email')->nullable();
     $table->string('contact_phone')->nullable();
     $table->boolean('is_active')->default(true);
     $table->boolean('is_verified')->default(false);
     $table->json('settings')->nullable(); // Store shop preferences
-    $table->foreignId('shop_category_id')->nullable()->constrained('shop_categories')->setNullOnDelete();
+    $table->foreignId('shop_category_id')->nullable()->constrained('shop_categories')->nullOnDelete();
     $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
     $table->softDeletes();
     $table->timestamps();
@@ -95,7 +95,7 @@ Schema::create('products', function (Blueprint $table) {
     $table->json('attributes')->nullable(); // {"brand": "Nike", "material": "Cotton"}
     $table->boolean('is_active')->default(true);
     $table->foreignId('shop_id')->constrained('shops')->cascadeOnDelete();
-    $table->foreignId('product_category_id')->nullable()->constrained('product_categories')->setNullOnDelete();
+    $table->foreignId('product_category_id')->nullable()->constrained('product_categories')->nullOnDelete();
     $table->softDeletes();
     $table->timestamps();
 
@@ -139,7 +139,7 @@ Schema::create('product_views', function (Blueprint $table) {
     $table->id();
     $table->string('ip_address', 45)->nullable();
     $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-    $table->foreignId('user_id')->nullable()->constrained('users')->setNullOnDelete();
+    $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
     $table->timestamps();
     
     $table->index(['product_id', 'created_at']);
@@ -155,8 +155,8 @@ Schema::create('cart_items', function (Blueprint $table) {
     $table->id();
     $table->integer('quantity')->check('quantity > 0');
     $table->foreignId('cart_id')->constrained('carts')->cascadeOnDelete();
-    $table->foreignId('product_id')->constrained('products')->setNullOnDelete();
-    $table->foreignId('variant_id')->nullable()->constrained('product_variants')->setNullOnDelete();
+    $table->foreignId('product_id')->constrained('products')->nullOnDelete();
+    $table->foreignId('variant_id')->nullable()->constrained('product_variants')->nullOnDelete();
     $table->timestamps();
 
     $table->unique(['cart_id', 'product_id', 'variant_id']);
@@ -189,7 +189,7 @@ Schema::create('orders', function (Blueprint $table) {
     $table->foreignId('shop_id')->constrained('shops')->restrictOnDelete(); // Don't delete shop with orders
     $table->foreignId('shipping_address_id')->constrained('addresses')->restrictOnDelete();
     $table->foreignId('billing_address_id')->constrained('addresses')->restrictOnDelete();
-    $table->foreignId('coupon_id')->nullable()->constrained('coupons')->setNullOnDelete(); // Keep order if coupon deleted;
+    $table->foreignId('coupon_id')->nullable()->constrained('coupons')->nullOnDelete(); // Keep order if coupon deleted;
     $table->foreignId('customer_id')->constrained('users')->restrictOnDelete();
     $table->softDeletes();
     $table->timestamps();
@@ -420,7 +420,7 @@ Schema::create('audit_logs', function (Blueprint $table) {
     $table->json('new_data')->nullable();
     $table->ipAddress('ip_address')->nullable();
     $table->text('user_agent')->nullable();
-    $table->foreignId('user_id')->nullable()->constrained('users')->setNullOnDelete();
+    $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
     $table->timestamps();
 
     $table->index(['entity_type', 'entity_id']);
