@@ -9,6 +9,8 @@ interface Shop {
     name: string;
     description: string | null;
     category: string | null;
+    rating: number;
+    reviews_count: number;
     logo_image: string;
     cover_image: string;
     contact_email: string | null;
@@ -44,8 +46,8 @@ const deleteShop = (id: number) => {
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-2xl font-serif font-semibold">My Shops</h1>
-                <p class="text-sm text-gray-500 mt-1">Manage your stores and settings</p>
+                <h1 class="text-2xl font-serif font-semibold">My Shop</h1>
+                <p class="text-sm text-gray-500 mt-1">Manage your store and settings</p>
             </div>
             <Button v-if="!hasShop" as-child>
                 <a href="/shops/create">
@@ -99,6 +101,12 @@ const deleteShop = (id: number) => {
                             <p v-if="shop.contact_phone" class="info">
                                 📞 {{ shop.contact_phone }}
                             </p>
+                        </div>
+
+                        <div class="shop-card-ratings">
+                        </div>
+                        <div class="shop-rating">
+                            <span>★</span> {{ shop.rating }} · {{ shop.reviews_count }} reviews
                         </div>
 
                         <div class="shop-card-meta">
@@ -166,12 +174,3 @@ const deleteShop = (id: number) => {
         </div>
     </div>
 </template>
-
-<style scoped>
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-</style>

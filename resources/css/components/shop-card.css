@@ -1,6 +1,14 @@
 .shop-card {
     @apply bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow;
 
+    .shop-rating {
+        @apply text-xs;
+
+        span {
+            @apply text-orange-400;
+        }
+    }
+
     .shop-card-images {
         @apply relative mb-4;
         .shop-card-cover {
@@ -45,15 +53,8 @@
         .shop-card-meta {
             @apply flex justify-between mt-4;
 
-            .shop-rating,
             .badge {
                 @apply text-xs text-gray-500;
-            }
-
-            .shop-rating {
-                span {
-                    @apply text-orange-400;
-                }
             }
         }
     }
@@ -69,5 +70,10 @@
         .actions {
             @apply flex gap-2;
         }
+    }
+
+    .contact-info,
+    .shop-rating {
+        @apply mt-3;
     }
 }

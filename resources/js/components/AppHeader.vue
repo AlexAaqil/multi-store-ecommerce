@@ -70,7 +70,7 @@ const mainNavItems = computed(() =>{
     if (isSeller.value) {
         items.push(
             {
-                title: 'Shops',
+                title: 'Shop',
                 href: shops.index(),
                 icon: Store,
             },
@@ -165,7 +165,7 @@ const rightNavItems: NavItem[] = [
                     </Sheet>
                 </div>
 
-                <Link :href="dashboard()" class="flex items-center gap-x-2">
+                <Link href="/" class="flex items-center gap-x-2">
                     <AppLogo />
                 </Link>
 
