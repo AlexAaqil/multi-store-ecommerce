@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Concerns\HasUuid;
 
 class Shop extends Model
 {
     use SoftDeletes;
+    use HasUuid;
 
     protected $guarded = [];
 
@@ -75,6 +77,11 @@ class Shop extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ShopCategory::class);
     }
 
     public function getLogoUrlFullAttribute(): string

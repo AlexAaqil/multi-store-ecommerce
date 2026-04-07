@@ -8,30 +8,39 @@ import { ImagePlus, X } from 'lucide-vue-next';
 import { ref } from 'vue';
 import shops from '@/routes/shops';
 
+interface Category {
+    id: number;
+    name: string;
+};
+
 interface Shop {
     id: number;
     name: string;
     description: string | null;
-    category: string | null;
     logo_url: string | null;
     cover_url: string | null;
     contact_email: string | null;
     contact_phone: string | null;
     is_active: boolean;
+    category: {
+        id: number;
+        name: string;
+    } | null;
 }
 
 const props = defineProps<{
     shop: Shop;
+    categories: Category[];
 }>();
 
 const form = useForm({
     name: props.shop.name,
     description: props.shop.description || '',
-    category: props.shop.category || '',
     contact_email: props.shop.contact_email || '',
     contact_phone: props.shop.contact_phone || '',
     logo: null as File | null,
     cover: null as File | null,
+    shop_category_id: props.shop.category?.id || null,
     _method: 'PUT',
 });
 
@@ -111,14 +120,18 @@ const submitForm = () => {
 
             <!-- Category -->
             <div class="space-y-2">
-                <Label for="category">Category</Label>
-                <Input
-                    id="category"
-                    v-model="form.category"
-                    type="text"
-                    placeholder="e.g., Beauty & Wellness"
-                />
-                <p v-if="form.errors.category" class="text-xs text-red-500">{{ form.errors.category }}</p>
+                <Label for="shop_category_id">Category</Label>
+                <select
+                    id="shop_category_id"
+                    v-model="form.shop_category_id"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                >
+                    <option :value="null">Select a category</option>
+                    <option v-for="category in categories" :key="category.id" :value="category.id">
+                        {{ category.name }}
+                    </option>
+                </select>
+                <p v-if="form.errors.shop_category_id" class="text-xs text-red-500">{{ form.errors.shop_category_id }}</p>
             </div>
 
             <!-- Description -->

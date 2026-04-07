@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shops;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Shops\Shop;
+use App\Models\Shops\ShopCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -21,6 +22,7 @@ class ShopController extends Controller
     public function index()
     {
         $shops = $this->user()->shops()
+            ->with('category')
             ->latest()
             ->paginate(10);
 
@@ -40,7 +42,11 @@ class ShopController extends Controller
             ]);
         }
 
-        return inertia('shops/Create');
+        $categories = ShopCategory::select('id', 'name')->get();
+
+        return inertia('shops/Create', [
+            'categories' => $categories
+        ]);
     }
 
     public function store(ShopRequest $request)
@@ -90,9 +96,14 @@ class ShopController extends Controller
         if ($shop->owner_id !== $this->user()->id) {
             abort(403);
         }
+
+        $shop->load('category');
+
+        $categories = ShopCategory::select('id', 'name')->get();
         
         return inertia('shops/Edit', [
-            'shop' => $shop
+            'shop' => $shop,
+            'categories' => $categories
         ]);
     }
 
