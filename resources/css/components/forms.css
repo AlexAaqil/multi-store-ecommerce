@@ -1,5 +1,9 @@
 form {
     @apply bg-white p-6 rounded-xl border border-gray-200;
+
+    h2 {
+        @apply text-lg font-semibold mb-4;
+    }
     
     .inputs-group {
         @apply mb-4;
@@ -11,6 +15,10 @@ form {
         label.required {
             @apply after:content-['*'] after:ml-[0.2px] after:text-red-500 after:font-bold;
         }
+    }
+
+    .submit-buttons {
+        @apply flex justify-start space-x-3 pt-4;
     }
 
     .inputs-group-wrapper,

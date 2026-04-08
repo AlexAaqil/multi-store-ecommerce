@@ -4,24 +4,40 @@ import { useVModel } from "@vueuse/core"
 import { cn } from "@/lib/utils"
 
 const props = defineProps<{
-  defaultValue?: string | number
-  modelValue?: string | number
+  defaultValue?: string | number | null
+  modelValue?: string | number | null
+  type?: string
   class?: HTMLAttributes["class"]
 }>()
 
 const emits = defineEmits<{
-  (e: "update:modelValue", payload: string | number): void
+  (e: "update:modelValue", payload: string | number | null): void
 }>()
 
 const modelValue = useVModel(props, "modelValue", emits, {
   passive: true,
   defaultValue: props.defaultValue,
 })
+
+// Handle number input conversion
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  let value: string | number | null = target.value
+  
+  // If it's a number input and the value is empty, emit null
+  if (props.type === 'number') {
+    value = target.value === '' ? null : Number(target.value)
+  }
+  
+  emits('update:modelValue', value)
+}
 </script>
 
 <template>
   <input
-    v-model="modelValue"
+    :type="type || 'text'"
+    :value="modelValue ?? ''"
+    @input="handleInput"
     data-slot="input"
     :class="cn(
       'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',

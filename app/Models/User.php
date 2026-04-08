@@ -78,6 +78,28 @@ class User extends Authenticatable
         return $this->hasOne(Shop::class, 'owner_id')->where('is_active', true);
     }
 
+    public function hasRole(string $role_name): bool
+    {
+        // Convert string role name to enum value
+        foreach (UserRoles::cases() as $role) {
+            if (strtolower($role->name) === strtolower($role_name)) {
+                return $this->role->value === $role->value;
+            }
+        }
+        return false;
+    }
+    
+    public function hasAnyRole(array $role_names): bool
+    {
+        foreach ($role_names as $role_name) {
+            if ($this->hasRole($role_name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->role === UserRoles::SUPER_ADMIN;
@@ -116,5 +138,55 @@ class User extends Authenticatable
     public function getStatusLabelAttribute(): string
     {
         return $this->status->label();
+    }
+
+    public function scopeOrderByRolePriority($query)
+    {
+        return $query->orderByRaw(
+            "CASE
+                WHEN role = ? THEN 1
+                WHEN role = ? THEN 2
+                WHEN role = ? THEN 3
+                WHEN role = ? THEN 4
+                ELSE 5
+            END ASC",
+            [
+                UserRoles::SUPER_ADMIN->value,
+                UserRoles::ADMIN->value,
+                UserRoles::SELLER->value,
+                UserRoles::CUSTOMER->value,
+            ]
+        )->orderBy('name');
+    }
+
+    public function scopeFilterByRole($query, $role)
+    {
+        // If role is empty string or null, don't filter
+        if ($role === null || $role === '' || $role === 'null') {
+            return $query;
+        }
+
+        // Handle numeric values
+        if (is_numeric($role)) {
+            return $query->where('role', (int) $role);
+        }
+        
+        // Handle string labels (for direct label filtering)
+        $roleEnum = UserRoles::tryFromLabel($role);
+        if ($roleEnum) {
+            return $query->where('role', $roleEnum->value);
+        }
+        
+        return $query;
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        if (!$search) return $query;
+        
+        return $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+            ->orWhere('email', 'like', "%{$search}%");
+        });
     }
 }

@@ -18,4 +18,25 @@ enum UserRoles: int
             self::CUSTOMER => 'Customer',
         };
     }
+
+    public static function labels():array
+    {
+        $labels = [];
+
+        foreach(self::cases() as $role) {
+            $labels[$role->value] = $role->label();
+        }
+
+        return $labels;
+    }
+
+    public static function tryFromLabel(string $label): ?self
+    {
+        foreach (self::cases() as $role) {
+            if (strtolower($role->label()) === strtolower(trim($label))) {
+                return $role;
+            }
+        }
+        return null;
+    }
 }
