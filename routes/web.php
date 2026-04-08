@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GuestPagesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Shops\ShopCategoryController;
 use App\Http\Controllers\Shops\ShopController;
 use App\Http\Controllers\Users\UserController;
 
@@ -13,12 +14,22 @@ Route::controller(GuestPagesController::class)
         Route::get('deals', 'dealsAndOffersPage')->name('deals-page');
     });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])
+    ->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('shops', ShopController::class)->except('show');
 });
 
-Route::middleware(['auth', 'verified', 'role:super_admin'])->group(function () {
+// Admins
+Route::middleware(['auth', 'verified', 'role:admin'])
+    ->group(function () {
+    Route::get('shops/all', [ShopController::class, 'getAllShops'])->name('shops.all');
+    Route::resource('shop-categories', ShopCategoryController::class)->except('show');
+});
+
+// Super Admins
+Route::middleware(['auth', 'verified', 'role:super_admin'])
+    ->group(function () {
     Route::resource('users', UserController::class)->except('show');
 });
 

@@ -1,4 +1,3 @@
-<!-- HeaderSection.vue -->
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -8,11 +7,11 @@ import Input from '@/components/ui/input/Input.vue';
 const props = defineProps<{
     title: string
     search: string
-    createHref: string | { url: string }
+    createHref?: string | { url: string }
     createButtonText?: string
     searchPlaceholder?: string
     showSearchBadge?: boolean
-}>()
+}>();
 
 const emit = defineEmits<{
     (e: 'update:search', value: string): void
@@ -23,9 +22,12 @@ const onSearchUpdate = (value: string | number | null) => {
 };
 
 const createUrl = computed(() => {
+    if (!props.createHref) return null;
+
     if (typeof props.createHref === 'string') {
         return props.createHref;
     }
+
     return props.createHref.url;
 });
 </script>
@@ -57,7 +59,8 @@ const createUrl = computed(() => {
                 </div>
             </div>
 
-            <Link :href="createUrl">
+            <!-- Only show create button if createHref is provided -->
+            <Link v-if="createUrl" :href="createUrl">
                 <Button>{{ createButtonText || 'Create' }}</Button>
             </Link>
         </div>

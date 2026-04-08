@@ -226,4 +226,43 @@ class ShopController extends Controller
         // Return the file name
         return $filename;
     }
+
+    public function getAllShops(Request $request)
+    {
+        $query = Shop::with('category');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('contact_email', 'like', "%{$search}%")
+                ->orWhere('contact_phone', 'like', "%{$search}%");
+            });
+        }
+        
+        $shops = $query->orderBy('name')
+            ->paginate(20)
+            ->through(function ($shop) {
+                return [
+                    'id' => $shop->id,
+                    'name' => $shop->name,
+                    'slug' => $shop->public_slug,
+                    'category' => $shop->category?->name,
+                    'description' => $shop->description,
+                    'contact_email' => $shop->contact_email,'contact_phone' => $shop->contact_phone,
+                    'rating' => 4.9,
+                    'reviews_count' => 312,
+                    'logo_image' => $shop->logo_url_full,
+                    'cover_image' => $shop->cover_url_full,
+                    'is_active' => $shop->is_active,
+                    'is_verified' => $shop->is_verified,
+                    'created_at' => $shop->created_at
+                ];
+            });
+
+        return inertia('shops/AllShops', [
+            'shops' => $shops,
+            'filters' => $request->only(['search'])
+        ]);
+    }
 }

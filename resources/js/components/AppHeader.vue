@@ -78,6 +78,16 @@ const mainNavItems = computed(() =>{
         );
     }
 
+    if (isAdmin.value) {
+        items.push(
+            {
+                title: 'Shops',
+                href: shops.all(),
+                icon: Store,
+            }
+        );
+    }
+
     if (isSeller.value) {
         items.push(
             {

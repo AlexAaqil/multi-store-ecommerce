@@ -106,7 +106,8 @@
     }
 }
 
-.SuperAdminDashboard {
+.SuperAdminDashboard,
+.AdminDashboard {
     .Hero {
         .hero-wrapper {
             .hero-title {
