@@ -105,3 +105,25 @@
         }
     }
 }
+
+.SuperAdminDashboard {
+    .Hero {
+        .hero-wrapper {
+            .hero-title {
+                @apply md:text-2xl;
+            }
+        }
+    }
+
+    .Stats {
+        .stats-wrapper {
+            @apply lg:grid-cols-6;
+
+            .stat-card {
+                .value {
+                    @apply md:text-xl;
+                }
+            }
+        }
+    }
+}
