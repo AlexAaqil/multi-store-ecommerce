@@ -835,6 +835,23 @@ const submitForm = () => {
 </div>
 ```
 
+# General 
+## Alternative for image
+```ts
+<!-- Logo -->
+<div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+    <img 
+        v-if="shop.logo_image" 
+        :src="shop.logo_image" 
+        :alt="shop.name"
+        class="w-full h-full object-cover"
+    />
+    <Store v-else class="w-5 h-5 text-gray-400" />
+</div>
+```
+
+## EOF
+
 
 
 
