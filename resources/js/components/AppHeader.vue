@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, Store, Users } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, Store, Users, Barcode } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -38,6 +38,7 @@ import { toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import shops from '@/routes/shops';
 import users from '@/routes/users';
+import productCategories from '@/routes/product-categories';
 import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
@@ -84,7 +85,12 @@ const mainNavItems = computed(() =>{
                 title: 'Shops',
                 href: shops.all(),
                 icon: Store,
-            }
+            },
+            {
+                title: 'Products',
+                href: productCategories.index(),
+                icon: Barcode,
+            },
         );
     }
 

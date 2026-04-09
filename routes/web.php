@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GuestPagesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Shops\ShopCategoryController;
 use App\Http\Controllers\Shops\ShopController;
-use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Products\ProductCategoryController;
 
 Route::controller(GuestPagesController::class)
     ->middleware([])
@@ -25,6 +26,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->group(function () {
     Route::get('shops/all', [ShopController::class, 'getAllShops'])->name('shops.all');
     Route::resource('shop-categories', ShopCategoryController::class)->except('show');
+    Route::resource('product-categories', ProductCategoryController::class)->except('show');
 });
 
 // Super Admins
