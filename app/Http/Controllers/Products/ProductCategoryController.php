@@ -13,7 +13,7 @@ class ProductCategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ProductCategory::query();
+        $query = ProductCategory::withCount('products');
 
         if ($request->filled('search')) {
             $search = $request->search;

@@ -125,12 +125,6 @@ const isRoleActive = (roleValue: string) => {
     <Head title="Users" />
 
     <div class="app_container">
-        <Toast v-if="page.props.flash?.message" 
-            :message="page.props.flash.message" 
-            :type="page.props.flash.type || 'success'" 
-            :duration="5000" 
-        />
-
         <PageHeader 
             title="Users"
             v-model:search="search"

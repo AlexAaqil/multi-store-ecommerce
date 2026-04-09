@@ -7,6 +7,8 @@ use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Shops\ShopCategoryController;
 use App\Http\Controllers\Shops\ShopController;
 use App\Http\Controllers\Products\ProductCategoryController;
+use App\Http\Controllers\Products\ProductController;
+use App\Http\Controllers\Products\ProductImageController;
 
 Route::controller(GuestPagesController::class)
     ->middleware([])
@@ -19,6 +21,8 @@ Route::middleware(['auth', 'verified'])
     ->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('shops', ShopController::class)->except('show');
+    Route::resource('products', ProductController::class)->except('show');
+    Route::delete('product-images/{image}', [ProductImageController::class, 'destroy'])->name('product-images.destroy');
 });
 
 // Admins

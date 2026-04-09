@@ -36,9 +36,10 @@ import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
-import shops from '@/routes/shops';
 import users from '@/routes/users';
+import shops from '@/routes/shops';
 import productCategories from '@/routes/product-categories';
+import products from '@/routes/products';
 import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
@@ -100,6 +101,11 @@ const mainNavItems = computed(() =>{
                 title: 'Shop',
                 href: shops.index(),
                 icon: Store,
+            },
+            {
+                title: 'Products',
+                href: products.index(),
+                icon: Barcode,
             },
         );
     }

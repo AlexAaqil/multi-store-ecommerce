@@ -22,6 +22,7 @@ interface ProductCategory {
     id: number;
     name: string;
     slug: string;
+    products_count: number;
 }
 
 interface Props {
@@ -57,12 +58,6 @@ const clearFilters = () => {
     <Head title="Product Categories" />
 
     <div class="app_container">
-        <Toast v-if="page.props.flash?.message"
-            :message="page.props.flash.message"
-            :type="page.props.flash.type || 'success'"
-            :duration="3000"
-        />
-
         <PageHeader 
             title="Product Categories"
             v-model:search="search"
@@ -103,7 +98,7 @@ const clearFilters = () => {
                             </TableCell>
                             <TableCell>{{ category.name }}</TableCell>
                             <TableCell>{{ category.slug }}</TableCell>
-                            <TableCell>000</TableCell>
+                            <TableCell>{{ category.products_count }}</TableCell>
                             <!-- <TableCell>{{ category.shops_count || 0 }}</TableCell> -->
                             <TableCell class="text-center">
                                 <div class="flex justify-center space-x-2">
