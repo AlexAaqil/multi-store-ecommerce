@@ -321,3 +321,10 @@ class CleanupOrders extends Command
 ```
 
 # EOF
+
+
+product name
+category
+price
+stock quantity
+description

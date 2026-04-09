@@ -78,7 +78,7 @@ class ShopController extends Controller
 }
 ```
 
-# Upgradable Shops Logic
+# Multi Shops Logic
 ```php
 <?php
 // database/migrations/2024_01_01_000001_add_shop_limits_to_users.php
@@ -181,6 +181,27 @@ class ShopController extends Controller
     protected function user(): User
     {
         return Auth::user();
+    }
+
+    // Modify already existing getCurrentShop Logic
+    protected function getCurrentShop(): Shop
+    {
+        // Option 1: Get from session
+        $shopId = session('current_shop_id');
+        
+        if ($shopId && $this->user()->shops()->where('id', $shopId)->exists()) {
+            return Shop::find($shopId);
+        }
+        
+        // Option 2: Get from request parameter
+        $shopId = request()->get('shop_id');
+        
+        if ($shopId && $this->user()->shops()->where('id', $shopId)->exists()) {
+            return Shop::find($shopId);
+        }
+        
+        // Option 3: Fallback to first shop
+        return $this->user()->shops()->first();
     }
 
     public function index()
