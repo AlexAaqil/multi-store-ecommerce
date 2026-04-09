@@ -1,15 +1,7 @@
-<!-- resources/js/components/custom/UserMenu.vue -->
 <script setup lang="ts">
-import { usePage, router } from '@inertiajs/vue3';
+import { usePage, router, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-// import { 
-//   UserCircleIcon, 
-//   ShoppingBagIcon, 
-//   HeartIcon,
-//   Cog6ToothIcon,
-//   ArrowRightStartOnRectangleIcon
-// } from '@heroicons/vue/24/outline';
-import { CircleUser, ShoppingBag, Heart, Cog } from 'lucide-vue-next';
+import { CircleUser, ShoppingBag, Heart, Cog, LogOut } from 'lucide-vue-next';
 
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
@@ -72,7 +64,7 @@ const closeMenu = () => {
           @click="handleLogout"
           class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
         >
-          <ArrowRightStartOnRectangleIcon class="w-4 h-4" />
+          <LogOut class="w-4 h-4" />
           Logout
         </button>
       </div>

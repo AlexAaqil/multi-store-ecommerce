@@ -2,9 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 
 const hotDeals = [
-    { id: 1, name: 'Aloe Vera Serum 50ml', shop: 'Amani Botanics', icon: 'https://media.gettyimages.com/id/1299655280/photo/apps-installed-on-a-samsung-galaxy-s21-smart-phone.jpg?s=612x612&w=gi&k=20&c=lhaG0yW0xaeexcoXhPyRacQdORcdjCEqv14ONGwluCg=', discount: '40% OFF', was: 'KES 1,200' },
-    { id: 2, name: 'Ankara Sneakers', shop: 'Zuri Threads', icon: '👟', discount: '25% OFF', was: 'KES 4,500' },
-    { id: 3, name: 'Pure Honey 500g', shop: "Mama's Pantry", icon: '🍯', discount: '15% OFF', was: 'KES 650' }
+    { id: 1, name: 'Aloe Vera Serum 50ml', shop: 'Amani Botanics', icon: 'https://media.gettyimages.com/id/1299655280/photo/apps-installed-on-a-samsung-galaxy-s21-smart-phone.jpg?s=612x612&w=gi&k=20&c=lhaG0yW0xaeexcoXhPyRacQdORcdjCEqv14ONGwluCg=', discount: '40% OFF', was: 'KES 1,200' }
 ];
 </script>
 
