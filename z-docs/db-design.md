@@ -73,7 +73,6 @@ Schema::create('product_categories', function (Blueprint $table) {
     $table->integer('sort_order')->default(0);
     $table->boolean('is_active')->default(true);
     $table->foreignId('parent_id')->nullable()->constrained('product_categories')->cascadeOnDelete();
-    $table->softDeletes();
     $table->timestamps();
 
     $table->index('slug');
