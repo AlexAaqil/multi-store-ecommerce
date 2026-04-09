@@ -11,7 +11,10 @@ import type { Shop } from '@/types/shop';
 import HotDeals from './components/HotDeals.vue';
 
 const props = defineProps<{
-    featured_shops: Shop[];
+    featured_shops: any[];
+    total_shops: number;
+    total_products: number;
+    total_shoppers: number;
 }>();
 
 provide('featured_shops', props.featured_shops);
@@ -21,7 +24,11 @@ provide('featured_shops', props.featured_shops);
     <Head title="Home" />
     <GuestLayout>
         <div class="main_container Homepage">
-            <Hero />
+            <Hero 
+                :total_shops="total_shops"
+                :total_products="total_products"
+                :total_shoppers="total_shoppers"
+            />
             <CategoryPills />
             <FeaturedShops />
             <HotDeals />

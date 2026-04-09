@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import Button from '@/components/ui/button/Button.vue';
+
+const props = defineProps<{
+    total_shops: number;
+    total_products: number;
+    total_shoppers: number;
+}>();
 </script>
 
 <template>
@@ -28,15 +34,15 @@ import Button from '@/components/ui/button/Button.vue';
 
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <div class="number">240+</div>
+                    <div class="number">{{ props.total_shops }}+</div>
                     <div class="label">Active shops</div>
                 </div>
                 <div class="hero-stat">
-                    <div class="number">12k</div>
+                    <div class="number">{{ props.total_products }}+</div>
                     <div class="label">Products listed</div>
                 </div>
                 <div class="hero-stat">
-                    <div class="number">3.8k</div>
+                    <div class="number">{{ props.total_shoppers }}+</div>
                     <div class="label">Daily shoppers</div>
                 </div>
             </div>

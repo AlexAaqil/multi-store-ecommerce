@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Shops\Shop;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Shops\Shop;
+use App\Models\Products\Product;
 
 class GuestPagesController extends Controller
 {
@@ -60,6 +61,8 @@ class GuestPagesController extends Controller
         return Inertia::render('guest/homepage/Home', [
             'featured_shops' => $featured_shops,
             'total_shops' => Shop::where('is_active', true)->count(),
+            'total_products' => Product::where('is_active', true)->count(),
+            'total_shoppers' => 000
         ]);
     }
 
