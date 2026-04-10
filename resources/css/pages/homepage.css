@@ -4,7 +4,7 @@
     }
     
     .Hero {
-        @apply relative bg-white border border-gray-200 rounded-2xl p-10 overflow-hidden;
+        @apply relative bg-white border border-gray-200 rounded-2xl p-10 overflow-hidden dark:bg-background dark:border-gray-700;
 
         .hero-wrapper {
             @apply lg:grid lg:grid-cols-2 gap-4;
@@ -49,7 +49,7 @@
             }
 
             .decorative-circle {
-                @apply absolute w-72 h-72 rounded-full -right-14 -top-14 bg-gray-100 opacity-60 z-0;
+                @apply absolute w-72 h-72 rounded-full -right-14 -top-14 bg-gray-100 opacity-60 z-0 dark:bg-gray-600;
             }
         }
     }

@@ -10,7 +10,7 @@
     }
 
     .Hero {
-        @apply bg-white border border-gray-200 p-6 rounded-2xl;
+        @apply bg-white border border-gray-200 p-6 rounded-2xl dark:bg-background dark:border-gray-700;
 
         .hero-wrapper {
             .icon-text {
@@ -58,7 +58,7 @@
             }
 
             .stats {
-                @apply flex gap-8 mt-6 pt-5 border-t border-gray-100;
+                @apply grid grid-cols-3 gap-4 lg:flex lg:gap-8 mt-6 pt-5 border-t border-gray-100 dark:border-gray-700;
 
                 .stat {
                     @apply text-center;
@@ -79,7 +79,7 @@
         @apply max-w-7xl mx-auto py-8;
 
         .tabs {
-            @apply border-b border-gray-200 mb-6;
+            @apply border-b border-gray-200 mb-6 dark:border-gray-700;
 
             .tabs-wrapper {
                 @apply flex gap-6;
@@ -88,10 +88,10 @@
 
         .products-tab {
             .products-wrapper {
-                @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6;
+                @apply grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6;
 
                 .shop-details-product-card {
-                    @apply bg-white border border-gray-200 rounded-tl-xl rounded-tr-xl overflow-hidden hover:shadow-md transition-shadow;
+                    @apply bg-white border border-gray-200 rounded-tl-xl rounded-tr-xl overflow-hidden hover:shadow-md transition-shadow dark:bg-background dark:border-gray-700;
 
                     .image {
                         @apply h-32 bg-gray-100 flex items-center justify-center text-4xl cursor-pointer;
@@ -105,11 +105,11 @@
                         @apply p-3;
 
                         .name {
-                            @apply font-medium text-sm text-gray-900;
+                            @apply font-medium text-sm text-gray-900 dark:text-foreground;
                         }
 
                         .category {
-                            @apply text-xs text-gray-600;
+                            @apply text-xs text-gray-600 dark:text-gray-300;
                         }
 
                         .price {
@@ -130,7 +130,7 @@
                     }
 
                     button {
-                        @apply w-full py-4 bg-gray-900 text-white font-medium ;
+                        @apply w-full py-4 bg-gray-900 text-white font-medium dark:bg-white dark:text-gray-900;
                     }
                 }
             }
@@ -138,7 +138,7 @@
 
         .about-tab {
             .about-tab-wrapper {
-                @apply bg-white rounded-lg p-6;
+                @apply bg-white border border-gray-200 rounded-lg p-6 dark:bg-background dark:border-gray-700;
 
                 .name {
                     @apply text-xl font-semibold mb-4;
@@ -149,7 +149,7 @@
                 }
 
                 .info {
-                    @apply mt-6 pt-6 border-t border-gray-200;
+                    @apply mt-6 pt-6 border-t border-gray-200 dark:border-gray-700;
 
                     .title {
                         @apply font-medium mb-3;
@@ -174,14 +174,14 @@
 
         .reviews-tab {
             .reviews-wrapper {
-                 @apply bg-gray-50 rounded-lg p-6 text-center;
+                 @apply bg-gray-50 rounded-lg p-6 text-center dark:bg-background dark:border-gray-700;
 
                  .title {
-                    @apply text-lg font-medium text-gray-900 mb-2;
+                    @apply text-lg font-medium text-gray-900 mb-2 dark:text-foreground;
                  }
 
                  .description {
-                    @apply text-gray-500;
+                    @apply text-gray-500 dark:text-gray-300;
                  }
             }
         }

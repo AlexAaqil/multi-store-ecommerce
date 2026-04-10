@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ImagePlus, X } from 'lucide-vue-next';
 import { ref } from 'vue';
+import FormError from '@/components/custom/FormError.vue';
 import products from '@/routes/products';
 
 interface Category {
@@ -103,10 +104,9 @@ const submitForm = () => {
             <p class="text-sm text-gray-500 mt-1">Add a new product to {{ shop.name }}</p>
         </div>
 
-        <form @submit.prevent="submitForm" class="space-y-6 bg-white p-6 rounded-xl border border-gray-200">
-            <!-- Basic Information -->
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
+        <form @submit.prevent="submitForm">
+            <div class="inputs-group-wrapper">
+                <div class="inputs-group">
                     <Label for="name" class="required">Product Name</Label>
                     <Input
                         id="name"
@@ -115,10 +115,10 @@ const submitForm = () => {
                         required
                         placeholder="e.g., Aloe Vera Serum"
                     />
-                    <p v-if="form.errors.name" class="text-xs text-red-500">{{ form.errors.name }}</p>
+                    <FormError :error="form.errors.name" />
                 </div>
 
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="sku">SKU (Stock Keeping Unit)</Label>
                     <Input
                         id="sku"
@@ -126,12 +126,12 @@ const submitForm = () => {
                         type="text"
                         placeholder="e.g., ALOE-001"
                     />
-                    <p class="text-xs text-gray-400">Unique product identifier. Leave empty to auto-generate.</p>
-                    <p v-if="form.errors.sku" class="text-xs text-red-500">{{ form.errors.sku }}</p>
+                    <p class="text-xs text-gray-400">Unique product identifier</p>
+                    <FormError :error="form.errors.sku" />
                 </div>
             </div>
 
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label for="description">Description</Label>
                 <Textarea
                     id="description"
@@ -139,12 +139,12 @@ const submitForm = () => {
                     rows="4"
                     placeholder="Describe your product..."
                 />
-                <p v-if="form.errors.description" class="text-xs text-red-500">{{ form.errors.description }}</p>
+                <FormError :error="form.errors.description" />
             </div>
 
             <!-- Pricing & Stock -->
             <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="cost_price">Cost Price (KES)</Label>
                     <Input
                         id="cost_price"
@@ -153,10 +153,10 @@ const submitForm = () => {
                         step="0.01"
                         placeholder="What you paid"
                     />
-                    <p v-if="form.errors.cost_price" class="text-xs text-red-500">{{ form.errors.cost_price }}</p>
+                    <FormError :error="form.errors.cost_price" />
                 </div>
 
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="price" class="required">Selling Price (KES)</Label>
                     <Input
                         id="price"
@@ -166,12 +166,12 @@ const submitForm = () => {
                         required
                         placeholder="Customer price"
                     />
-                    <p v-if="form.errors.price" class="text-xs text-red-500">{{ form.errors.price }}</p>
+                    <FormError :error="form.errors.price" />
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="stock_qty">Stock Quantity</Label>
                     <Input
                         id="stock_qty"
@@ -179,10 +179,10 @@ const submitForm = () => {
                         type="number"
                         placeholder="0"
                     />
-                    <p v-if="form.errors.stock_qty" class="text-xs text-red-500">{{ form.errors.stock_qty }}</p>
+                    <FormError :error="form.errors.stock_qty" />
                 </div>
 
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="low_stock_threshold">Low Stock Alert</Label>
                     <Input
                         id="low_stock_threshold"
@@ -195,7 +195,7 @@ const submitForm = () => {
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="barcode">Barcode</Label>
                     <Input
                         id="barcode"
@@ -203,10 +203,10 @@ const submitForm = () => {
                         type="text"
                         placeholder="Scanning code"
                     />
-                    <p v-if="form.errors.barcode" class="text-xs text-red-500">{{ form.errors.barcode }}</p>
+                    <FormError :error="form.errors.barcode" />
                 </div>
 
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="product_category_id">Category</Label>
                     <select
                         id="product_category_id"
@@ -218,13 +218,13 @@ const submitForm = () => {
                             {{ category.name }}
                         </option>
                     </select>
-                    <p v-if="form.errors.product_category_id" class="text-xs text-red-500">{{ form.errors.product_category_id }}</p>
+                    <FormError :error="form.errors.product_category_id" />
                 </div>
             </div>
 
             <!-- Weight & Dimensions -->
             <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="weight">Weight</Label>
                     <Input
                         id="weight"
@@ -233,9 +233,10 @@ const submitForm = () => {
                         step="0.01"
                         placeholder="0.00"
                     />
+                    <FormError :error="form.errors.weight" />
                 </div>
 
-                <div class="space-y-2">
+                <div class="inputs-group">
                     <Label for="weight_units">Weight Unit</Label>
                     <select
                         id="weight_units"
@@ -247,11 +248,12 @@ const submitForm = () => {
                         <option value="lb">Pounds (lb)</option>
                         <option value="oz">Ounces (oz)</option>
                     </select>
+                    <FormError :error="form.errors.weight_units" />
                 </div>
             </div>
 
             <!-- Product Images -->
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label>Product Images</Label>
                 <div class="grid grid-cols-4 gap-4">
                     <div v-for="(preview, index) in imagePreviews" :key="index" class="relative">
@@ -312,7 +314,7 @@ const submitForm = () => {
             <div class="border-t pt-4">
                 <h3 class="font-medium mb-4">SEO Information</h3>
                 <div class="space-y-4">
-                    <div class="space-y-2">
+                    <div class="inputs-group">
                         <Label for="meta_title">Meta Title</Label>
                         <Input
                             id="meta_title"
@@ -322,9 +324,10 @@ const submitForm = () => {
                             placeholder="SEO title (60 chars max)"
                         />
                         <p class="text-xs text-gray-400">{{ form.meta_title?.length || 0 }}/60 characters</p>
+                        <FormError :error="form.errors.meta_title" />
                     </div>
 
-                    <div class="space-y-2">
+                    <div class="inputs-group">
                         <Label for="meta_description">Meta Description</Label>
                         <Textarea
                             id="meta_description"
@@ -334,17 +337,18 @@ const submitForm = () => {
                             placeholder="SEO description (160 chars max)"
                         />
                         <p class="text-xs text-gray-400">{{ form.meta_description?.length || 0 }}/160 characters</p>
+                        <FormError :error="form.errors.meta_description" />
                     </div>
                 </div>
             </div>
 
-            <!-- Actions -->
-            <div class="flex justify-end gap-3 pt-4">
-                <Button type="button" variant="outline" @click="router.visit('/products')">
-                    Cancel
-                </Button>
+            <div class="submit-buttons">
                 <Button type="submit" :disabled="form.processing">
                     {{ form.processing ? 'Creating...' : 'Create Product' }}
+                </Button>
+
+                <Button type="button" variant="outline" @click="router.visit('/products')">
+                    Cancel
                 </Button>
             </div>
         </form>

@@ -10,7 +10,7 @@
             }
 
             .hero-salutation {
-                @apply text-sm text-gray-500 mt-1;
+                @apply text-sm text-gray-500 mt-1 dark:text-gray-300;
             }
         }
     }
@@ -20,7 +20,7 @@
             @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
 
             .stat-card {
-                @apply bg-white border border-gray-200 rounded-xl p-5 transition-shadow hover:shadow-sm;
+                @apply bg-white border border-gray-200 rounded-xl p-5 transition-shadow hover:shadow-sm dark:bg-background dark:border-gray-500;
 
                 .label {
                     @apply text-xs font-medium text-gray-400 uppercase tracking-wider mb-2;
@@ -51,7 +51,7 @@
         @apply grid lg:grid-cols-2 gap-4;
 
         .orders-wrapper {
-            @apply bg-white border border-gray-200 rounded-xl overflow-hidden;
+            @apply bg-white border border-gray-200 rounded-xl overflow-hidden dark:bg-background dark:border-gray-500;
 
             .header {
                 @apply flex items-center justify-between px-5 py-4 border-b border-gray-100;
@@ -89,7 +89,7 @@
         }
 
         .sales_stats {
-            @apply bg-white border border-gray-200 rounded-xl p-5;
+            @apply bg-white border border-gray-200 rounded-xl p-5 dark:bg-background dark:border-gray-500;
             
             .mini-chart {
                 @apply h-16 flex items-end gap-1 mt-3;

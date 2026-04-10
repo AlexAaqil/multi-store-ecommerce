@@ -100,26 +100,26 @@ const deleteProduct = (id: number) => {
             create-button-text="Create Product"
         />
 
-        <div class="bg-white dark:bg-gray-900 rounded-lg border shadow-sm overflow-hidden">
+        <div class="table-wrapper">
             <Table>
                 <TableHeader>
-                    <TableRow class="bg-gray-50 dark:bg-gray-800">
+                    <TableRow>
                         <TableHead>Product</TableHead>
                         <TableHead>SKU</TableHead>
                         <TableHead>Price</TableHead>
                         <TableHead>Stock</TableHead>
                         <TableHead>Category</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead class="text-center">Actions</TableHead>
+                        <TableHead class="thead-actions">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
 
                 <TableBody>
                     <TableRow v-for="product in props.products.data" :key="product.id">
                         <TableCell>
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
-                                    <img v-if="product.image_url" :src="product.image_url" class="w-full h-full object-cover" />
+                            <div class="image-column">
+                                <div class="image">
+                                    <img v-if="product.image_url" :src="product.image_url" />
                                     <Package v-else class="w-5 h-5 text-gray-400" />
                                 </div>
                                 <span class="font-medium">{{ product.name }}</span>
@@ -146,9 +146,9 @@ const deleteProduct = (id: number) => {
                                 {{ product.is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </TableCell>
-                        <TableCell class="text-center">
-                            <div class="flex justify-center space-x-2">
-                                <Link :href="productsRoutes.edit(product.id).url" class="text-blue-600 hover:text-blue-800">
+                        <TableCell class="tbody-actions">
+                            <div class="actions">
+                                <Link :href="productsRoutes.edit(product.id).url" class="action edit">
                                     <Pencil class="w-4 h-4" />
                                 </Link>
                                 <DeleteConfirmationDialog 
@@ -157,7 +157,7 @@ const deleteProduct = (id: number) => {
                                     description="This product will be deleted permanently!" 
                                     confirm-text="Delete Product">
                                     <template #trigger>
-                                        <button class="text-red-600 hover:text-red-800">
+                                        <button class="action delete">
                                             <Trash2 class="w-4 h-4" />
                                         </button>
                                     </template>

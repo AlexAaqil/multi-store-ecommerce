@@ -18,6 +18,7 @@ interface Product {
     slug: string;
     description: string | null;
     price: number;
+    image_url: string;
     cost_price: number | null;
     stock_qty: number;
     sku: string;
@@ -109,7 +110,7 @@ const averageRating = computed(() => {
                 <div class="product-hero-wrapper">
                     <div class="product-gallery">
                         <div class="main-image">
-                            <img :src="selectedImage || product.images?.[0]?.full_url || '/images/default-product.png'" :alt="product.name" />
+                            <img :src="selectedImage || product.image_url" :alt="product.name" />
                         </div>
                         <div v-if="product.images && product.images.length > 1" class="thumbnail-list">
                             <div 

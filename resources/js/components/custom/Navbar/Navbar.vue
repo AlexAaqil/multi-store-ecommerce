@@ -2,7 +2,11 @@
 import { Link, usePage, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { HomeIcon, BadgeDollarSign, MessageCircleMore, Menu, X, Barcode } from 'lucide-vue-next';
+import { Sun, Moon } from 'lucide-vue-next';
+import { useAppearance } from '@/composables/useAppearance';
 import UserMenu from './UserMenu.vue';
+
+const { appearance, updateAppearance } = useAppearance();
 
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
@@ -35,8 +39,8 @@ const handleLogout = () => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between h-14">
         <!-- Logo -->
-        <Link href="/" class="flex items-centerfont-serif text-xl">
-          Multi<span class="italic text-gray-500">Store</span>
+        <Link href="/" class="flex items-centerfont-serif text-xl dark:text-gray-400">
+          Multi<span class="italic text-gray-500 dark:text-gray-900">Store</span>
         </Link>
 
         <!-- Desktop Navigation - Hidden on mobile -->
@@ -67,10 +71,19 @@ const handleLogout = () => {
           <button 
             v-if="user && user.role === 2"
             @click="router.visit('/dashboard')"
-            class="hidden sm:block px-3 py-1.5 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 whitespace-nowrap"
+            class="hidden sm:block px-3 py-1.5 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 whitespace-nowrap dark:text-gray-500"
           >
             + List Product
           </button>
+
+            <button
+              @click="updateAppearance(appearance === 'light' ? 'dark' : 'light')"
+              class="p-2 rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-800"
+              title="Toggle theme"
+            >
+              <Sun v-if="appearance === 'light'" class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              <Moon v-else class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            </button>
           
           <!-- User Menu (desktop and mobile) -->
           <UserMenu v-if="user" />
@@ -78,7 +91,7 @@ const handleLogout = () => {
           <div v-else class="flex items-center gap-2">
             <Link
               href="/login"
-              class="px-3 py-1.5 text-sm hover:text-gray-900"
+              class="px-3 py-1.5 text-sm hover:text-gray-900 dark:text-gray-500"
             >
               Login
             </Link>

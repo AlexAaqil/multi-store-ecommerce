@@ -48,7 +48,7 @@ const deleteShop = (id: number) => {
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-2xl font-serif font-semibold">My Shop</h1>
-                <p class="text-sm text-gray-500 mt-1">Manage your store and settings</p>
+                <p class="text-sm text-gray-500 mt-1 dark:text-gray-300">Manage your store and settings</p>
             </div>
             <Button v-if="!hasShop" as-child>
                 <a href="/shops/create">

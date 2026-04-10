@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, Store, Users, Barcode } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, Store, Users, Barcode, Sun, Moon, Monitor } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -35,12 +35,13 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl } from '@/lib/utils';
+import type { BreadcrumbItem, NavItem } from '@/types';
+import { useAppearance } from '@/composables/useAppearance';
 import { dashboard } from '@/routes';
 import users from '@/routes/users';
 import shops from '@/routes/shops';
 import productCategories from '@/routes/product-categories';
 import products from '@/routes/products';
-import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
@@ -125,6 +126,16 @@ const rightNavItems: NavItem[] = [
     //     icon: BookOpen,
     // },
 ];
+
+const { appearance, updateAppearance } = useAppearance();
+
+const toggleTheme = () => {
+    if (appearance.value === 'light') {
+        updateAppearance('dark');
+    } else {
+        updateAppearance('light');
+    }
+};
 </script>
 
 <template>
@@ -251,6 +262,18 @@ const rightNavItems: NavItem[] = [
                                 class="size-5 opacity-80 group-hover:opacity-100"
                             />
                         </Button> -->
+
+                        <!-- Theme Toggle Button -->
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            @click="toggleTheme"
+                            class="h-9 w-9 cursor-pointer"
+                            :title="appearance === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
+                        >
+                            <Sun v-if="appearance === 'light'" class="size-5" />
+                            <Moon v-else class="size-5" />
+                        </Button>
 
                         <div class="hidden space-x-1 lg:flex">
                             <template

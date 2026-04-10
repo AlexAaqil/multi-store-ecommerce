@@ -98,9 +98,8 @@ const submitForm = () => {
             <p class="text-sm text-gray-500 mt-1">Enter your shop details to start selling</p>
         </div>
 
-        <form @submit.prevent="submitForm" class="space-y-6 bg-white p-6 rounded-xl border border-gray-200">
-            <!-- Shop Name -->
-            <div class="space-y-2">
+        <form @submit.prevent="submitForm">
+            <div class="inputs-group">
                 <Label for="name">Shop Name *</Label>
                 <Input
                     id="name"
@@ -109,10 +108,10 @@ const submitForm = () => {
                     required
                     placeholder="e.g., Amani Botanics"
                 />
-                <p v-if="form.errors.name" class="text-xs text-red-500">{{ form.errors.name }}</p>
+                <FormError :error="form.errors.name" />
             </div>
 
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label for="custom_slug">Custom URL (Optional)</Label>
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-gray-500">/shops/</span>
@@ -129,11 +128,10 @@ const submitForm = () => {
                 <p class="text-xs text-gray-400">
                     Your shop will be available at: /shops/{{ form.custom_slug || 'your-shop-name' }}
                 </p>
-                <p v-if="form.errors.custom_slug" class="text-xs text-red-500">{{ form.errors.custom_slug }}</p>
+                <FormError :error="form.errors.custom_slug" />
             </div>
 
-            <!-- Category -->
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label for="shop_category_id">Category</Label>
                 <select
                     id="shop_category_id"
@@ -145,11 +143,10 @@ const submitForm = () => {
                         {{ category.name }}
                     </option>
                 </select>
-                <p v-if="form.errors.shop_category_id" class="text-xs text-red-500">{{ form.errors.shop_category_id }}</p>
+                <FormError :error="form.errors.shop_category_id" />
             </div>
 
-            <!-- Description -->
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label for="description">Description</Label>
                 <Textarea
                     id="description"
@@ -157,11 +154,10 @@ const submitForm = () => {
                     rows="4"
                     placeholder="Describe your shop..."
                 />
-                <p v-if="form.errors.description" class="text-xs text-red-500">{{ form.errors.description }}</p>
+                <FormError :error="form.errors.description" />
             </div>
 
-            <!-- Contact Email -->
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label for="contact_email">Contact Email</Label>
                 <Input
                     id="contact_email"
@@ -169,11 +165,10 @@ const submitForm = () => {
                     type="email"
                     placeholder="shop@example.com"
                 />
-                <p v-if="form.errors.contact_email" class="text-xs text-red-500">{{ form.errors.contact_email }}</p>
+                <FormError :error="form.errors.contact_email" />
             </div>
 
-            <!-- Contact Phone -->
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label for="contact_phone">Contact Phone</Label>
                 <Input
                     id="contact_phone"
@@ -181,11 +176,10 @@ const submitForm = () => {
                     type="tel"
                     placeholder="+254 XXX XXX XXX"
                 />
-                <p v-if="form.errors.contact_phone" class="text-xs text-red-500">{{ form.errors.contact_phone }}</p>
+                <FormError :error="form.errors.contact_phone" />
             </div>
 
-            <!-- Logo Upload -->
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label>Shop Logo</Label>
                 <div class="flex items-center gap-4">
                     <div class="relative">
@@ -215,8 +209,7 @@ const submitForm = () => {
                 <p v-if="form.errors.logo" class="text-xs text-red-500">{{ form.errors.logo }}</p>
             </div>
 
-            <!-- Cover Image Upload -->
-            <div class="space-y-2">
+            <div class="inputs-group">
                 <Label>Cover Image</Label>
                 <div class="relative">
                     <div class="h-40 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
@@ -241,13 +234,13 @@ const submitForm = () => {
                 <p v-if="form.errors.cover" class="text-xs text-red-500">{{ form.errors.cover }}</p>
             </div>
 
-            <!-- Actions -->
-            <div class="flex justify-end gap-3 pt-4">
-                <Button type="button" variant="outline" @click="router.visit('/shops')">
-                    Cancel
-                </Button>
+            <div class="submit-buttons">
                 <Button type="submit" :disabled="form.processing">
                     {{ form.processing ? 'Creating...' : 'Create Shop' }}
+                </Button>
+
+                <Button type="button" variant="outline" @click="router.visit('/shops')">
+                    Cancel
                 </Button>
             </div>
         </form>

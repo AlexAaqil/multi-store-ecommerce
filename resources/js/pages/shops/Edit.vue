@@ -115,7 +115,7 @@ const submitForm = () => {
                         required
                         placeholder="e.g., Amani Botanics"
                     />
-                    <p v-if="form.errors.name" class="text-xs text-red-500">{{ form.errors.name }}</p>
+                    <FormError :error="form.errors.name" />
                 </div>
 
                 <div class="inputs-group">
@@ -130,7 +130,7 @@ const submitForm = () => {
                             {{ category.name }}
                         </option>
                     </select>
-                    <p v-if="form.errors.shop_category_id" class="text-xs text-red-500">{{ form.errors.shop_category_id }}</p>
+                    <FormError :error="form.errors.shop_category_id" />
                 </div>
             </div>
 
@@ -143,7 +143,7 @@ const submitForm = () => {
                         type="email"
                         placeholder="shop@example.com"
                     />
-                    <p v-if="form.errors.contact_email" class="text-xs text-red-500">{{ form.errors.contact_email }}</p>
+                    <FormError :error="form.errors.contact_email" />
                 </div>
 
                 <div class="inputs-group">
@@ -154,7 +154,7 @@ const submitForm = () => {
                         type="tel"
                         placeholder="+254 XXX XXX XXX"
                     />
-                    <p v-if="form.errors.contact_phone" class="text-xs text-red-500">{{ form.errors.contact_phone }}</p>
+                    <FormError :error="form.errors.contact_phone" />
                 </div>
             </div>
             
@@ -166,7 +166,7 @@ const submitForm = () => {
                     rows="4"
                     placeholder="Describe your shop..."
                 />
-                <p v-if="form.errors.description" class="text-xs text-red-500">{{ form.errors.description }}</p>
+                <FormError :error="form.errors.description" />
             </div>
 
             <div class="inputs-group-wrapper">
@@ -224,12 +224,9 @@ const submitForm = () => {
                     </div>
                     <p v-if="form.errors.logo" class="text-xs text-red-500">{{ form.errors.logo }}</p>
                 </div>
-
-                
             </div>
 
-            <!-- Actions -->
-            <div class="flex gap-3 pt-4">
+            <div class="submit-buttons">
                 <Button type="submit" :disabled="form.processing">
                     {{ form.processing ? 'Saving...' : 'Update Shop' }}
                 </Button>

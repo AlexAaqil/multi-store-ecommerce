@@ -34,7 +34,7 @@ const createUrl = computed(() => {
 
 <template>
     <div class="header mb-6">
-        <div class="flex justify-between items-center mb-4">
+        <div class="grid gap-2 lg:flex lg:justify-between lg:items-center lg:mb-4">
             <h1 class="text-xl font-bold">{{ title }}</h1>
 
             <div class="search-filter-bar">
@@ -45,7 +45,7 @@ const createUrl = computed(() => {
                             @update:model-value="onSearchUpdate"
                             type="text"
                             :placeholder="searchPlaceholder"
-                            class="w-full"
+                            class="w-full dark:border-gray-600"
                         />
                     </div>
 

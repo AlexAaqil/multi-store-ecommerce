@@ -167,7 +167,7 @@ class Shop extends Model
     public function getLogoUrlFullAttribute(): string
     {
         if (!$this->logo_image) {
-            return asset('images/default-shop-logo.png');
+            return asset('assets/images/default.png');
         }
 
         return asset("storage/shops/logos/{$this->logo_image}");
@@ -176,7 +176,7 @@ class Shop extends Model
     public function getCoverUrlFullAttribute(): string
     {
         if (!$this->cover_image) {
-            return asset('images/default-shop-logo.png');
+            return asset('assets/images/default.png');
         }
 
         return asset("storage/shops/covers/{$this->cover_image}");

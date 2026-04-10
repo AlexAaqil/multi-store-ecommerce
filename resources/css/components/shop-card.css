@@ -1,5 +1,5 @@
 .shop-card {
-    @apply bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow;
+    @apply bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow dark:bg-background dark:border-gray-700;
 
     .shop-rating {
         @apply text-xs;
@@ -32,15 +32,15 @@
         @apply p-4;
 
         .shop-card-name {
-            @apply font-medium text-gray-900;
+            @apply font-medium text-gray-900 dark:text-foreground;
         }
 
         .shop-card-category {
-            @apply text-xs text-gray-500 mt-1;
+            @apply text-xs text-gray-500 mt-1 dark:text-gray-300;
         }
 
         .shop-card-description {
-            @apply text-sm text-gray-600 mt-3 line-clamp-2;
+            @apply text-sm text-gray-600 mt-3 line-clamp-2 dark:text-gray-300;
         }
 
         .shop-card-contact-info {
@@ -54,7 +54,7 @@
             @apply flex justify-between mt-4;
 
             .badge {
-                @apply text-xs text-gray-500;
+                @apply text-xs text-gray-500 dark:text-gray-300;
             }
         }
     }
@@ -70,7 +70,7 @@
     .shop-card-meta {
         @apply mt-3 pt-3 border-t border-gray-100 flex justify-between items-center;
         .date {
-            @apply text-xs text-gray-400
+            @apply text-xs text-gray-400 dark:text-foreground;
         }
 
         .actions {

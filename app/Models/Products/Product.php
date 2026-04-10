@@ -122,6 +122,6 @@ class Product extends Model
 
     public function getPrimaryImageUrlAttribute(): string
     {
-        return $this->primaryImage?->full_url ?? asset('images/default-product.png');
+        return $this->primaryImage?->full_url ?? asset('assets/images/default.png');
     }
 }
