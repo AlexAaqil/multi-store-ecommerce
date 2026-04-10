@@ -27,7 +27,7 @@ const props = defineProps<{
                         <Button>Browse Offers</Button>
                     </Link>
                     <Link href="/dashboard">
-                        <Button variant="outline">Get Started</Button>
+                        <Button variant="outline" class="bg-white">Get Started</Button>
                     </Link>
                 </div>
             </div>

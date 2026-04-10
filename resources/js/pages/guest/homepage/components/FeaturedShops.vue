@@ -20,7 +20,7 @@ const featured_shops = inject<Shop[]>('featured_shops', []);
                 v-for="shop in featured_shops" 
                 :key="shop.id"
                 class="shop-card"
-                @click="$inertia.visit(`/shop/${shop.slug}`)"
+                @click="$inertia.visit(`/shop-details/${shop.slug}`)"
             >
                 <div class="shop-card-images">
                     <div class="shop-card-cover">

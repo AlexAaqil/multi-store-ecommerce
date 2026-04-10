@@ -14,6 +14,8 @@ Route::controller(GuestPagesController::class)
     ->middleware([])
     ->group(function () {
         Route::get('/', 'homePage')->name('home');
+        Route::get('shop-details/{shop:slug}', 'shopDetails')->name('shop-details-page');
+        Route::get('product-details/{product:slug}', 'productDetails')->name('product-details-page');
         Route::get('deals', 'dealsAndOffersPage')->name('deals-page');
     });
 

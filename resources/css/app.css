@@ -2,7 +2,7 @@
 
 /* *{outline: 1px solid green} */
 .main_container {
-    @apply px-6 lg:px-16 pt-16;
+    @apply max-w-7xl mx-auto min-h-[100dvh] px-6 lg:px-16 py-16;
 
     .section-header {
         @apply flex justify-between items-center mb-4;
@@ -25,5 +25,7 @@
 
 @import "./pages/homepage";
 @import "./pages/dealspage";
+@import "./pages/shopdetailspage";
+@import "./pages/productdetailspage";
 
 @import "./pages/dashboard";

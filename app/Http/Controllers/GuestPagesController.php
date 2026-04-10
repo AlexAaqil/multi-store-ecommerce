@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Shops\Shop;
 use App\Models\Products\Product;
 
@@ -58,7 +57,7 @@ class GuestPagesController extends Controller
             ];
         });
         
-        return Inertia::render('guest/homepage/Home', [
+        return inertia('guest/homepage/Home', [
             'featured_shops' => $featured_shops,
             'total_shops' => Shop::where('is_active', true)->count(),
             'total_products' => Product::where('is_active', true)->count(),
@@ -66,9 +65,112 @@ class GuestPagesController extends Controller
         ]);
     }
 
+    public function shopDetails($slug)
+    {
+        $shop = Shop::with(['category', 'owner'])
+            ->where('custom_slug', $slug)
+            ->orWhere('slug', $slug)
+            ->firstOrFail();
+
+                // Get products for this shop
+        $products = $shop->products()
+            ->with('category')
+            ->where('is_active', true)
+            ->latest()
+            ->paginate(12)
+            ->through(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'price' => $product->price,
+                    'cost_price' => $product->cost_price,
+                    'stock_qty' => $product->stock_qty,
+                    'category' => $product->category?->name,
+                    'is_active' => $product->is_active,
+                    'image_url' => $product->primary_image_url,
+                    'created_at' => $product->created_at,
+                ];
+            });
+        
+        // Get shop statistics
+        $shop_stats = [
+            'total_products' => $shop->products()->count(),
+            // 'total_sales' => $shop->orders()->where('payment_status', 1)->count(),
+            // 'total_reviews' => $shop->reviews()->count(),
+            // 'average_rating' => $shop->reviews()->avg('rating') ?? 0,
+            'total_sales' => 000,
+            'total_reviews' => 000,
+            'average_rating' => 000,
+            'response_rate' => 98, // You can calculate this later
+            'response_time' => 'within 24 hours', // You can calculate this later
+        ];
+        
+        return inertia('guest/shops/ShopDetails', [
+            'shop' => [
+                'id' => $shop->id,
+                'name' => $shop->name,
+                'slug' => $shop->public_slug,
+                'description' => $shop->description,
+                'logo_url' => $shop->logo_url_full,
+                'cover_url' => $shop->cover_url_full,
+                'contact_email' => $shop->contact_email,
+                'contact_phone' => $shop->contact_phone,
+                'is_active' => $shop->is_active,
+                'is_verified' => $shop->is_verified,
+                'category' => $shop->category?->name,
+                'owner' => [
+                    'name' => $shop->owner?->name,
+                    'joined' => $shop->created_at->diffForHumans(),
+                ],
+                'stats' => $shop_stats,
+                'created_at' => $shop->created_at,
+            ],
+            'products' => $products,
+        ]);
+    }
+
+    public function productDetails($slug)
+    {
+        $product = Product::with(['category', 'shop', 'images'])
+            ->orWhere('slug', $slug)
+            ->firstOrFail();
+        
+        return inertia('guest/products/ProductDetails', [
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'sku' => $product->sku,
+                'price' => $product->price,
+                'description' => $product->description,
+                'image_url' => $product->primary_image_url,
+                'is_active' => $product->is_active,
+                'stock_qty' => $product->stock_qty,
+                'category' => $product->category?->name,
+                'images' => $product->images->map(function ($image) {
+                    return [
+                        'id' => $image->id,
+                        'name' => $image->name,
+                        'full_url' => $image->full_url,
+                    ];
+                }),
+                'shop' => [
+                    'id' => $product->shop->id,
+                    'name' => $product->shop->name,
+                    'slug' => $product->shop->slug,
+                    'logo_url' => $product->shop->logo_url_full,
+                    'is_verified' => $product->shop->is_verified,
+                ]
+            ],
+            'reviews' => [],
+            'related_products' => [],
+        ]);
+    }
+
     public function dealsAndOffersPage()
     {
-        return Inertia::render('guest/dealspage/Deals');
+        return inertia('guest/dealspage/Deals');
     }
 
     public function about()
