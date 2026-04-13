@@ -194,6 +194,37 @@ Schema::create('inventory_stocks', function (Blueprint $table) {
     $table->unique(['product_id', 'variant_id', 'location_id']);
 });
 
+Schema::create('discounts', function (Blueprint $table) {
+    $table->id();
+    $table->uuid()->unique();
+    $table->string('name');
+    $table->unsignedTinyInteger('type')->default(0);
+
+    // Discount value
+    $table->decimal('value', 12, 2);
+    $table->unsignedTinyInteger('type')->default(0); // 0=percentage, 1=fixed_amount
+
+    // Scope: what this discount applies to
+    // 0=shop_wide, 1=product_category, 2=specific_products
+    $table->unsignedTinyInteger('scope')->default(0);
+    $table->json('target_ids')->nullable(); // product or category ids when scope = 1 or 2
+    
+    // Conditions
+    $table->decimal('min_order_amount', 12, 2)->nullable();
+    $table->integer('min_quantity')->nullable();
+    
+    // Schedule
+    $table->timestamp('starts_at');
+    $table->timestamp('expires_at');
+    
+    $table->boolean('is_active')->default(true);
+    $table->foreignId('shop_id')->constrained('shops')->cascadeOnDelete();
+    $table->timestamps();
+    
+    $table->index(['shop_id', 'is_active', 'starts_at', 'expires_at']);
+    $table->index(['scope', 'is_active']);
+});
+
 Schema::create('carts', function (Blueprint $table) {
     $table->id();
     $table->foreignId('user_id')->unique()->constrained('users')->cascadeOnDelete(); // One cart per user
@@ -252,6 +283,26 @@ Schema::create('orders', function (Blueprint $table) {
     $table->index('deleted_at'); // For soft delete queries
 });
 
+Schema::create('coupons', function (Blueprint $table) {
+    $table->id();
+    $table->uuid()->unique();
+    $table->string('code')->unique();
+    $table->string('name');
+    $table->unsignedTinyInteger('type')->default(0);
+    $table->decimal('value', 12, 2);
+    $table->decimal('min_order_amount', 12, 2)->nullable();
+    $table->integer('usage_limit')->nullable();
+    $table->integer('used_count')->default(0);
+    $table->dateTime('starts_at');
+    $table->dateTime('expires_at');
+    $table->boolean('is_active')->default(true);
+    $table->foreignId('shop_id')->constrained('shops')->cascadeOnDelete();
+    $table->timestamps();
+
+    $table->index('code');
+    $table->index(['is_active', 'expires_at']);
+});
+
 Schema::create('order_items', function (Blueprint $table) {
     $table->id();
     $table->integer('quantity');
@@ -270,6 +321,16 @@ Schema::create('order_items', function (Blueprint $table) {
     $table->index(['order_id']);
     $table->index(['product_id']);
     $table->index(['order_id', 'product_id']);
+});
+
+Schema::create('coupon_redemptions', function (Blueprint $table) {
+    $table->id();
+    $table->uuid()->unique();
+    $table->foreignId('coupon_id')->constrained('coupons')->cascadeOnDelete();
+    $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
+    $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+    $table->decimal('discount_amount', 12, 2);
+    $table->timestamps();
 });
 
 Schema::create('payments', function (Blueprint $table) {
@@ -332,65 +393,6 @@ Schema::create('vendor_payouts', function (Blueprint $table) {
     $table->timestamps();
 
     $table->index(['shop_id', 'status']);
-});
-
-Schema::create('coupons', function (Blueprint $table) {
-    $table->id();
-    $table->uuid()->unique();
-    $table->string('code')->unique();
-    $table->string('name');
-    $table->unsignedTinyInteger('type')->default(0);
-    $table->decimal('value', 12, 2);
-    $table->decimal('min_order_amount', 12, 2)->nullable();
-    $table->integer('usage_limit')->nullable();
-    $table->integer('used_count')->default(0);
-    $table->dateTime('starts_at');
-    $table->dateTime('expires_at');
-    $table->boolean('is_active')->default(true);
-    $table->foreignId('shop_id')->constrained('shops')->cascadeOnDelete();
-    $table->timestamps();
-
-    $table->index('code');
-    $table->index(['is_active', 'expires_at']);
-});
-
-Schema::create('coupon_redemptions', function (Blueprint $table) {
-    $table->id();
-    $table->uuid()->unique();
-    $table->foreignId('coupon_id')->constrained('coupons')->cascadeOnDelete();
-    $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
-    $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-    $table->decimal('discount_amount', 12, 2);
-    $table->timestamps();
-});
-
-Schema::create('discounts', function (Blueprint $table) {
-    $table->id();
-    $table->uuid()->unique();
-    $table->string('name');
-    $table->unsignedTinyInteger('type')->default(0);
-    $table->decimal('value', 12, 2);
-    
-    // What it applies to
-    $table->unsignedTinyInteger('target_type')->default(0);
-    $table->json('target_ids')->nullable(); // [1,2,3] for category or product IDs
-    
-    // Conditions
-    $table->decimal('min_order_amount', 12, 2)->nullable();
-    $table->integer('min_quantity')->nullable();
-    
-    // Schedule
-    $table->timestamp('starts_at');
-    $table->timestamp('expires_at');
-    
-    // Priority (if multiple discounts apply)
-    $table->integer('priority')->default(0); // Higher = applies first
-    
-    $table->boolean('is_active')->default(true);
-    $table->foreignId('shop_id')->constrained('shops')->cascadeOnDelete();
-    $table->timestamps();
-    
-    $table->index(['shop_id', 'is_active', 'expires_at']);
 });
 
 Schema::create('reviews', function (Blueprint $table) {
