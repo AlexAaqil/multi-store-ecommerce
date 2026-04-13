@@ -509,7 +509,7 @@ const submitForm = () => {
 
 # General 
 ## Alternative for image
-```ts
+```vue
 <!-- Logo -->
 <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
     <img 
@@ -520,6 +520,78 @@ const submitForm = () => {
     />
     <Store v-else class="w-5 h-5 text-gray-400" />
 </div>
+```
+
+## Dicount Component
+```vue
+<!-- resources/js/components/custom/DiscountedPrice.vue -->
+<script setup lang="ts">
+interface Props {
+    originalPrice: number
+    discountedPrice: number | null
+    percentageOff: number | null
+    size?: 'sm' | 'md' | 'lg'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    size: 'md'
+})
+
+const formatPrice = (price: number) => `KES ${price.toLocaleString()}`
+</script>
+
+<template>
+    <div class="flex items-center gap-2 flex-wrap">
+        <!-- Discounted: show new price first, original crossed out, then badge -->
+        <template v-if="discountedPrice !== null && percentageOff !== null">
+            <span :class="{
+                'text-sm font-semibold': size === 'sm',
+                'text-base font-semibold': size === 'md',
+                'text-xl font-bold': size === 'lg',
+            }" class="text-gray-900">
+                {{ formatPrice(discountedPrice) }}
+            </span>
+
+            <span :class="{
+                'text-xs': size === 'sm',
+                'text-sm': size === 'md',
+                'text-base': size === 'lg',
+            }" class="text-gray-400 line-through">
+                {{ formatPrice(originalPrice) }}
+            </span>
+
+            <span :class="{
+                'text-xs px-1.5 py-0.5': size === 'sm',
+                'text-xs px-2 py-0.5': size === 'md',
+                'text-sm px-2.5 py-1': size === 'lg',
+            }" class="bg-red-100 text-red-600 font-medium rounded-full">
+                {{ percentageOff }}% Off
+            </span>
+        </template>
+
+        <!-- No discount: just show price normally -->
+        <template v-else>
+            <span :class="{
+                'text-sm font-semibold': size === 'sm',
+                'text-base font-semibold': size === 'md',
+                'text-xl font-bold': size === 'lg',
+            }" class="text-gray-900">
+                {{ formatPrice(originalPrice) }}
+            </span>
+        </template>
+    </div>
+</template>
+```
+
+Usage: 
+
+```vue
+<DiscountedPrice
+    :original-price="product.price"
+    :discounted-price="product.discounted_price"
+    :percentage-off="product.percentage_off"
+    size="md"
+/>
 ```
 
 ## EOF
