@@ -58,7 +58,7 @@ const props = defineProps<Props>();
 const search = ref(props.filters.search || '');
 
 const performSearch = useDebounceFn(() => {
-    router.get('/shop-categories', {
+    router.get('/products', {
         search: search.value
     }, {
         preserveState: true,
