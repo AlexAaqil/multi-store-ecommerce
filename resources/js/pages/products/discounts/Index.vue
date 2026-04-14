@@ -116,10 +116,17 @@ const deleteDiscount = (id: number) => {
 
                 <TableBody>
                     <TableRow v-for="discount in props.discounts.data" :key="discount.id">
-                        <TableCell class="font-medium">{{ discount.name }}</TableCell>
+                        <TableCell 
+                            :class="{
+                                'font-medium': true, 
+                                'text-red-600': !discount.is_active
+                            }"
+                        >
+                            {{ discount.name }}
+                        </TableCell>
                         <TableCell>{{ discount.type_label }}</TableCell>
                         <TableCell>
-                            <span class="font-semibold text-red-600">
+                            <span class="font-semibold text-green-600">
                                 {{ discount.formatted_value }}
                             </span>
                         </TableCell>
