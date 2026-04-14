@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import EmptyDeals from '@/pages/guest/components/EmptyDeals.vue';
 
 const props = defineProps<{
     hot_deals?: any[];
@@ -28,14 +29,14 @@ const props = defineProps<{
                     <p class="deal-shop">{{ product.shop_name }}</p>
                 </div>
                 <div class="deal-right">
-                    <div class="deal-discount">{{ product.percentage_off }}% OFF</div>
+                    <div class="deal-discount">{{ product.discount_pct }}% OFF</div>
                     <div class="deal-was">Was {{ product.old_price }}</div>
                 </div>
             </div>
         </div>
 
-        <div v-else>
-            <p>No available Hot Deals right now</p>
+        <div v-else class="deals-empty-state">
+            <EmptyDeals type="hot" />
         </div>
     </section>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import EmptyDeals from '@/pages/guest/components/EmptyDeals.vue';
 
 const props = defineProps<{
     flash_sales?: any[];
@@ -15,30 +16,27 @@ const props = defineProps<{
         
         <div v-if="flash_sales && flash_sales.length > 0" class="hotdeals-wrapper">
             <div 
-                v-for="deal in flash_sales" 
-                :key="deal.id"
+                v-for="product in flash_sales" 
+                :key="product.id"
                 class="product-card_deal"
-                @click="$inertia.visit(`/product/${deal.id}`)"
+                @click="$inertia.visit(`/product-details/${product.slug}`)"
             >
                 <div class="deal-icon">
-                    <img :src="deal.image_url" :alt="deal.name">
+                    <img :src="product.image_url" :alt="product.name">
                 </div>
                 <div class="deal-info">
-                    <h3 class="deal-name">{{ deal.name }}</h3>
-                    <p class="deal-shop">{{ deal.shop_name }}</p>
+                    <h3 class="deal-name">{{ product.name }}</h3>
+                    <p class="deal-shop">{{ product.shop_name }}</p>
                 </div>
                 <div class="deal-right">
-                    <div class="deal-discount">{{ deal.discount_text }}</div>
-                    <div class="deal-was">Was KES {{ deal.old_price }}</div>
+                    <div class="deal-discount">{{ product.discount_pct }}% OFF</div>
+                    <div class="deal-was">Was KES {{ product.old_price }}</div>
                 </div>
             </div>
         </div>
         
-        <div v-else class="empty-state">
-            <div class="empty-icon">⚡</div>
-            <h3 class="empty-title">No Flash Offers Available</h3>
-            <p class="empty-message">Check back soon for exciting flash deals!</p>
-            <Link href="/" class="empty-button">Browse Products</Link>
+        <div v-else class="deals-empty-state">
+            <EmptyDeals type="flash" />
         </div>
     </section>
 </template>

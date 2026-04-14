@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import ProductPrice from '@/components/custom/Products/Price.vue';
+import EmptyDeals from '@/pages/guest/components/EmptyDeals.vue';
 
 const props = defineProps<{
     clearance_sales?: any[];
@@ -39,11 +40,8 @@ const props = defineProps<{
             </div>
         </div>
 
-        <div v-else class="empty-state">
-            <div class="empty-icon">⚡</div>
-            <h3 class="empty-title">No Clearance Sales Available</h3>
-            <p class="empty-message">Check back soon for exciting flash deals!</p>
-            <Link href="/" class="empty-button">Browse Products</Link>
+        <div v-else class="deals-empty-state">
+            <EmptyDeals type="clearance" />
         </div>
     </section>
 </template>

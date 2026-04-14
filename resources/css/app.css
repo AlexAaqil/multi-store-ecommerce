@@ -2,7 +2,7 @@
 
 /* *{outline: 1px solid green} */
 .main_container {
-    @apply max-w-7xl mx-auto min-h-[100dvh] px-6 lg:px-16 py-16;
+    @apply max-w-7xl mx-auto min-h-[100dvh] px-6 lg:px-24 py-16;
 
     .section-header {
         @apply flex justify-between items-center mb-4;
