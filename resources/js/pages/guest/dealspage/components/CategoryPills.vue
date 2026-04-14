@@ -8,7 +8,7 @@ interface Category {
 };
 
 const props = defineProps<{
-    shop_categories: Category[];
+    product_categories: Category[];
 }>();
 
 const activeCategory = ref('All');
@@ -25,7 +25,7 @@ const activeCategory = ref('All');
         </button>
         
         <button 
-            v-for="category in shop_categories" 
+            v-for="category in product_categories" 
             :key="category.id"
             class="cat-pill"
             :class="{ active: activeCategory === category.name }"

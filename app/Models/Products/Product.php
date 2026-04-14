@@ -5,6 +5,7 @@ namespace App\Models\Products;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\Shops\Shop;
@@ -20,7 +21,9 @@ class Product extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
-        'attributes' => 'array'
+        'attributes' => 'array',
+        'cost_price' => 'float',
+        'price' => 'float'
     ];
 
     protected static function booted()
@@ -99,6 +102,64 @@ class Product extends Model
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    // Discounts that apply to this product directly (scope = 2)
+    public function discounts(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Discount::class,
+            'discount_products',
+            'product_id',
+            'discount_id'
+        )->withTimestamps();
+    }
+
+    // Get all active discounts for this product (includes shop-wide and category)
+    public function getActiveDiscountsAttribute()
+    {
+        return Discount::active()
+            ->forShop($this->shop_id)
+            ->forProduct($this->id)
+            ->get();
+    }
+
+    // Get the best active discount for this product
+    public function getBestDiscountAttribute(): ?Discount
+    {
+        $discounts = $this->active_discounts;
+        
+        if ($discounts->isEmpty()) {
+            return null;
+        }
+
+        // Calculate which discount gives the best value
+        $bestDiscount = null;
+        $bestAmount = 0;
+
+        foreach ($discounts as $discount) {
+            $amount = $discount->calculateDiscount($this->price, $this->id, 1);
+            
+            if ($amount > $bestAmount) {
+                $bestAmount = $amount;
+                $bestDiscount = $discount;
+            }
+        }
+
+        return $bestDiscount;
+    }
+
+    // Get discounted price (if any active discount applies)
+    public function getDiscountedPriceAttribute(): float
+    {
+        $bestDiscount = $this->best_discount;
+        
+        if (!$bestDiscount) {
+            return $this->price;
+        }
+
+        $discountAmount = $bestDiscount->calculateDiscount($this->price, $this->id, 1);
+        return max(0, $this->price - $discountAmount);
     }
 
     public function getProfitMarginAttribute(): float

@@ -68,13 +68,13 @@ const handleLogout = () => {
         <!-- Right Section -->
         <div class="flex items-center gap-2">
           <!-- List Product button - only for sellers -->
-          <button 
+          <!-- <button 
             v-if="user && user.role === 2"
             @click="router.visit('/dashboard')"
             class="hidden sm:block px-3 py-1.5 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 whitespace-nowrap dark:text-gray-500"
           >
             + List Product
-          </button>
+          </button> -->
 
             <button
               @click="updateAppearance(appearance === 'light' ? 'dark' : 'light')"
@@ -139,14 +139,14 @@ const handleLogout = () => {
         </div>
 
         <!-- List Product button for mobile -->
-        <button 
+        <!-- <button 
           v-if="user && user.role === 2"
           @click="router.visit('/dashboard'); isMobileMenuOpen = false"
           class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-50 mb-2"
         >
           <Barcode class="w-5 h-5" />
           List Product
-        </button>
+        </button> -->
 
         <!-- User info for mobile (if logged in) -->
         <div v-if="user" class="pt-3 mt-2 border-t border-gray-100">

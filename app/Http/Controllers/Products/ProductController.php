@@ -12,10 +12,14 @@ use App\Models\User;
 use App\Models\Shops\Shop;
 use App\Models\Products\ProductCategory;
 use App\Models\Products\Product;
+use App\Models\Products\Discount;
 use App\Http\Requests\Products\ProductRequest;
+use App\Services\DiscountService;
 
 class ProductController extends Controller
 {
+    public function __construct(protected DiscountService $discountService) {}
+
     protected function user(): User
     {
         return Auth::user();
@@ -71,24 +75,49 @@ class ProductController extends Controller
             });
         }
 
-        $products = $query->orderBy('name')
-            ->paginate(10)
-            ->through(function ($product) {
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'slug' => $product->slug,
-                    'sku' => $product->sku,
-                    'cost_price' => $product->cost_price,
-                    'price' => $product->price,
-                    'stock_qty' => $product->stock_qty,
-                    'category' => $product->category?->name,
-                    'is_active' => $product->is_active,
-                    'is_featured' => $product->is_featured,
-                    'image_url' => $product->primary_image_url,
-                    'created_at' => $product->created_at,
+        $products = $query->orderBy('name')->paginate(10);
+
+        // Load shop discounts with their relationships
+        $shop_discounts = Discount::active()
+            ->forShop($shop->id)
+            ->with(['products', 'categories'])
+            ->get();
+
+
+        $products = $products->through(function ($product) use ($shop_discounts) {
+            $discount = $this->discountService->resolveForProduct($product, $shop_discounts);
+            $discount_data = null;
+            if ($discount) {
+                $discount_data = [
+                    'name' => $discount->name,
+                    'type' => $discount->type,
+                    'value' => $discount->value,
+                    'formatted_value' => $discount->formatted_value,
+                    'percentage_off' => $this->discountService->calculatePercentageOff($product->price, $discount),
+                    'starts_at' => $discount->starts_at->toISOString(),
+                    'expires_at' => $discount->starts_at->toISOString(),
+                    'is_scheduled' => $discount->starts_at->isFuture(),
+                    'starts_in_days' => $discount->starts_at->isFuture() ? $discount->starts_at->diffInDays(now()) : null,
                 ];
-            });
+            }
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'sku' => $product->sku,
+                'cost_price' => $product->cost_price,
+                'price' => $product->price,
+                'stock_qty' => $product->stock_qty,
+                'category' => $product->category?->name,
+                'is_active' => $product->is_active,
+                'is_featured' => $product->is_featured,
+                'image_url' => $product->primary_image_url,
+                'created_at' => $product->created_at,
+                'discount' => $discount_data,
+                'discounted_price' => $discount ? $this->discountService->calculateDiscountedPrice($product->price, $discount): null,
+                'percentage_off' => $discount ? $this->discountService->calculatePercentageOff($product->price, $discount) : null,
+            ];
+        });
         
         return inertia('products/Index', [
             'products' => $products,

@@ -1,39 +1,44 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 
-const hotDeals = [
-    { id: 1, name: 'Aloe Vera Serum 50ml', shop: 'Amani Botanics', icon: 'https://media.gettyimages.com/id/1299655280/photo/apps-installed-on-a-samsung-galaxy-s21-smart-phone.jpg?s=612x612&w=gi&k=20&c=lhaG0yW0xaeexcoXhPyRacQdORcdjCEqv14ONGwluCg=', discount: '40% OFF', was: 'KES 1,200' },
-    { id: 2, name: 'Ankara Sneakers', shop: 'Zuri Threads', icon: '👟', discount: '25% OFF', was: 'KES 4,500' },
-    { id: 3, name: 'Pure Honey 500g', shop: "Mama's Pantry", icon: '🍯', discount: '15% OFF', was: 'KES 650' }
-];
+const props = defineProps<{
+    flash_sales?: any[];
+}>();
 </script>
 
 <template>
     <section class="FlashSales">
         <div class="section-header">
             <div class="section-title">Flash Offers</div>
-            <Link href="/deals" class="section-link">12 active</Link>
+            <Link href="/deals" class="section-link">{{ flash_sales?.length || 0 }} active</Link>
         </div>
         
-        <div class="hotdeals-wrapper">
+        <div v-if="flash_sales && flash_sales.length > 0" class="hotdeals-wrapper">
             <div 
-                v-for="deal in hotDeals" 
+                v-for="deal in flash_sales" 
                 :key="deal.id"
                 class="product-card_deal"
                 @click="$inertia.visit(`/product/${deal.id}`)"
             >
                 <div class="deal-icon">
-                    <img :src=deal.icon alt="">
+                    <img :src="deal.image_url" :alt="deal.name">
                 </div>
                 <div class="deal-info">
                     <h3 class="deal-name">{{ deal.name }}</h3>
-                    <p class="deal-shop">{{ deal.shop }}</p>
+                    <p class="deal-shop">{{ deal.shop_name }}</p>
                 </div>
                 <div class="deal-right">
-                    <div class="deal-discount">{{ deal.discount }}</div>
-                    <div class="deal-was">Was {{ deal.was }}</div>
+                    <div class="deal-discount">{{ deal.discount_text }}</div>
+                    <div class="deal-was">Was KES {{ deal.old_price }}</div>
                 </div>
             </div>
+        </div>
+        
+        <div v-else class="empty-state">
+            <div class="empty-icon">⚡</div>
+            <h3 class="empty-title">No Flash Offers Available</h3>
+            <p class="empty-message">Check back soon for exciting flash deals!</p>
+            <Link href="/" class="empty-button">Browse Products</Link>
         </div>
     </section>
 </template>

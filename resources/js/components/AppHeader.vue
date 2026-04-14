@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, Store, Users, Barcode, Sun, Moon, Monitor } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, Store, Users, Barcode, Sun, Moon, Monitor, Percent } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -42,6 +42,7 @@ import users from '@/routes/users';
 import shops from '@/routes/shops';
 import productCategories from '@/routes/product-categories';
 import products from '@/routes/products';
+import discounts from '@/routes/discounts';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
@@ -107,6 +108,11 @@ const mainNavItems = computed(() =>{
                 title: 'Products',
                 href: products.index(),
                 icon: Barcode,
+            },
+            {
+                title: 'Discounts',
+                href: discounts.index(),
+                icon: Percent,
             },
         );
     }

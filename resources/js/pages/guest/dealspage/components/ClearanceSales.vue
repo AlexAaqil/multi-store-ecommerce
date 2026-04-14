@@ -1,54 +1,49 @@
 <script setup lang="ts">
-const products = [
-    {
-        id: 1,
-        image: 'https://media.gettyimages.com/id/1299655280/photo/apps-installed-on-a-samsung-galaxy-s21-smart-phone.jpg?s=612x612&w=gi&k=20&c=lhaG0yW0xaeexcoXhPyRacQdORcdjCEqv14ONGwluCg=',
-        name: 'Kitenge Socks (3-pack)',
-        slug: 'kitenge-socks-3-pack',
-        price: 280,
-        old_price: 580,
-        discount_pct: 52,
-    },
-    {
-        id: 2,
-        image: '',
-        name: 'Hibiscus Body Scrub',
-        slug: 'hibiscus-body-scrub',
-        price: 490,
-        old_price: 850,
-        discount_pct: 42,
-    }
-]
+import { Link } from '@inertiajs/vue3';
+import ProductPrice from '@/components/custom/Products/Price.vue';
+
+const props = defineProps<{
+    clearance_sales?: any[];
+}>();
 </script>
 
 <template>
     <section class="ClearanceSales">
         <div class="section-header">
             <div class="section-title">Clearance</div>
-            <Link href="/deals" class="section-link">12 active</Link>
+            <Link href="/deals" class="section-link">{{ clearance_sales?.length || 0 }} active</Link>
         </div>
 
-        <div class="clearancesales-wrapper">
+        <div v-if="clearance_sales && clearance_sales.length > 0" class="clearancesales-wrapper">
             <div 
-                v-for="product in products" 
+                v-for="product in clearance_sales" 
                 :key="product.id"
                 class="product-card"
-                @click="$inertia.visit(`/product/${product.id}`)"
             >
-                <div class="product-image">
-                    <img :src=product.image :alt=product.slug />
+                <Link :href="`/product-details/${product.slug}`">
+                    <div class="image">
+                        <img :src="product.image_url" :alt="product.name" />
+                    </div>
+                </Link>
+                <div class="info">
+                    <h3 class="name">{{ product.name }}</h3>
+                    <p class="category">{{ product.category || 'Uncategorized' }}</p>
+                    <ProductPrice
+                        :original-price="product.old_price"
+                        :discounted-price="product.price"
+                        :percentage-off="product.discount_pct"
+                        size="sm"
+                    />
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name">{{ product.name }}</h3>
-                    <p class="product-price-info">
-                        <span class="product-price">KES {{ product.price }}</span>
-                        <span class="product-discount">
-                            <span class="discount-price">KES {{ product.old_price }}</span>
-                            <span class="discount-pct">{{ product.discount_pct }}%</span>
-                        </span>
-                    </p>
-                </div>
+                <button @click.stop="">Add To Cart</button>
             </div>
+        </div>
+
+        <div v-else class="empty-state">
+            <div class="empty-icon">⚡</div>
+            <h3 class="empty-title">No Clearance Sales Available</h3>
+            <p class="empty-message">Check back soon for exciting flash deals!</p>
+            <Link href="/" class="empty-button">Browse Products</Link>
         </div>
     </section>
 </template>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import Button from '@/components/ui/button/Button.vue';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Star } from 'lucide-vue-next';
+import ProductPrice from '@/components/custom/Products/Price.vue';
 
 interface Product {
     id: number;
@@ -14,6 +15,8 @@ interface Product {
     category: string | null;
     stock_qty: number;
     created_at: string;
+    discounted_price: number | null;   // fix: was non-nullable
+    percentage_off: number | null;     // fix: was non-nullable
 }
 
 interface ShopStats {
@@ -36,10 +39,7 @@ interface Shop {
     is_active: boolean;
     is_verified: boolean;
     category: string | null;
-    owner: {
-        name: string;
-        joined: string;
-    };
+    owner: { name: string; joined: string };
     stats: ShopStats;
     created_at: string;
 }
@@ -64,6 +64,12 @@ const tabs = [
     { id: 'about', label: 'About' },
     { id: 'reviews', label: 'Reviews' },
 ];
+
+// Only products that actually have a discount — drives the On Offer tab
+// and the tab label count badge
+const discountedProducts = computed(() =>
+    props.products.data.filter(p => p.discounted_price !== null)
+);
 </script>
 
 <template>
@@ -73,9 +79,7 @@ const tabs = [
         <div class="main_container ShopDetailsPage">
             <section class="back-button">
                 <Link href="/">
-                    <Button variant="outline">
-                        &larr; Back to Discover
-                    </Button>
+                    <Button variant="outline">&larr; Back to Discover</Button>
                 </Link>
             </section>
 
@@ -83,9 +87,8 @@ const tabs = [
                 <div class="hero-wrapper">
                     <div class="icon-text">
                         <div class="icon">
-                            <img :src="shop.logo_url" alt="">
+                            <img :src="shop.logo_url" :alt="shop.name" />
                         </div>
-
                         <div class="text">
                             <div class="text-wrapper">
                                 <h2 class="name">{{ shop.name }}</h2>
@@ -103,22 +106,18 @@ const tabs = [
                             <div class="number">{{ shop.stats.total_products }}</div>
                             <div class="text">Products</div>
                         </div>
-
                         <div class="stat">
                             <div class="number">{{ shop.stats.average_rating }}★</div>
                             <div class="text">Rating</div>
                         </div>
-
                         <div class="stat">
                             <div class="number">{{ shop.stats.total_reviews }}</div>
                             <div class="text">Reviews</div>
                         </div>
-
                         <div class="stat">
                             <div class="number">{{ shop.stats.total_sales }}</div>
                             <div class="text">Sales</div>
                         </div>
-
                         <div class="stat">
                             <div class="number">{{ shop.stats.response_rate }}%</div>
                             <div class="text">Response Rate</div>
@@ -137,19 +136,27 @@ const tabs = [
                             :class="[
                                 'pb-3 text-sm font-medium transition-colors',
                                 activeTab === tab.id
-                                    ? 'border-b-2 border-gray-900 text-gray-900 dark:border-gray-700 dark:text-foreground'
+                                    ? 'border-b-2 border-gray-900 text-gray-900'
                                     : 'text-gray-500 hover:text-gray-700'
                             ]"
                         >
                             {{ tab.label }}
+                            <!-- Show count badge on On Offer tab if there are deals -->
+                            <span
+                                v-if="tab.id === 'on_offer' && discountedProducts.length > 0"
+                                class="ml-1.5 px-1.5 py-0.5 text-xs bg-red-100 text-red-600 rounded-full"
+                            >
+                                {{ discountedProducts.length }}
+                            </span>
                         </button>
                     </div>
                 </div>
 
+                <!-- All Products tab -->
                 <div v-if="activeTab === 'products'" class="products-tab">
                     <div v-if="products.data.length > 0" class="products-wrapper">
-                        <div 
-                            v-for="product in products.data" 
+                        <div
+                            v-for="product in products.data"
                             :key="product.id"
                             class="shop-details-product-card"
                         >
@@ -161,31 +168,26 @@ const tabs = [
                             <div class="info">
                                 <h3 class="name">{{ product.name }}</h3>
                                 <p class="category">{{ product.category || 'Uncategorized' }}</p>
-                                <p class="price">
-                                    <span class="discount-price">
-                                        KES 720
-                                    </span>
-                                    <span class="product-price">
-                                        {{ product.price }}
-                                    </span>
-                                    <span class="discount-pct">
-                                        40%
-                                    </span>
-                                </p>
+                                <ProductPrice
+                                    :original-price="product.price"
+                                    :discounted-price="product.discounted_price"
+                                    :percentage-off="product.percentage_off"
+                                    size="sm"
+                                />
                             </div>
-                            <button 
-                                @click.stop=""
-                            >
-                                Add To Cart
-                            </button>
+                            <button @click.stop="">Add To Cart</button>
                         </div>
+                    </div>
+                    <div v-else class="py-12 text-center text-gray-400 text-sm">
+                        No products available yet.
                     </div>
                 </div>
 
+                <!-- On Offer tab — only discounted products -->
                 <div v-if="activeTab === 'on_offer'" class="products-tab">
-                    <div v-if="products.data.length > 0" class="products-wrapper">
-                        <div 
-                            v-for="product in products.data" 
+                    <div v-if="discountedProducts.length > 0" class="products-wrapper">
+                        <div
+                            v-for="product in discountedProducts"
                             :key="product.id"
                             class="shop-details-product-card"
                         >
@@ -197,53 +199,40 @@ const tabs = [
                             <div class="info">
                                 <h3 class="name">{{ product.name }}</h3>
                                 <p class="category">{{ product.category || 'Uncategorized' }}</p>
-                                <p class="price">
-                                    <span class="discount-price">
-                                        KES 720
-                                    </span>
-                                    <span class="product-price">
-                                        {{ product.price }}
-                                    </span>
-                                    <span class="discount-pct">
-                                        40%
-                                    </span>
-                                </p>
+                                <!-- Always has a discount here so the discounted layout always shows -->
+                                <ProductPrice
+                                    :original-price="product.price"
+                                    :discounted-price="product.discounted_price"
+                                    :percentage-off="product.percentage_off"
+                                    size="sm"
+                                />
                             </div>
+                            <button @click.stop="">Add To Cart</button>
                         </div>
+                    </div>
+                    <div v-else class="py-12 text-center text-gray-400 text-sm">
+                        No active offers in this shop right now.
                     </div>
                 </div>
 
+                <!-- About tab -->
                 <div v-if="activeTab === 'about'" class="about-tab">
                     <div class="about-tab-wrapper">
                         <h2 class="name">{{ shop.name }}</h2>
-                        <p class="description">
-                            {{ shop.description || 'No description provided.' }}
-                        </p>
-                        
+                        <p class="description">{{ shop.description || 'No description provided.' }}</p>
                         <div class="info">
                             <h3 class="title">Shop Information</h3>
                             <dl class="details">
-                                <div>
-                                    <dt>Shop Owner</dt>
-                                    <dd>{{ shop.owner.name }}</dd>
-                                </div>
-                                <div>
-                                    <dt>Member Since</dt>
-                                    <dd>{{ shop.owner.joined }}</dd>
-                                </div>
-                                <div>
-                                    <dt>Category</dt>
-                                    <dd>{{ shop.category || 'General' }}</dd>
-                                </div>
-                                <div>
-                                    <dt>Total Products</dt>
-                                    <dd>{{ shop.stats.total_products }}</dd>
-                                </div>
+                                <div><dt>Shop Owner</dt><dd>{{ shop.owner.name }}</dd></div>
+                                <div><dt>Member Since</dt><dd>{{ shop.owner.joined }}</dd></div>
+                                <div><dt>Category</dt><dd>{{ shop.category || 'General' }}</dd></div>
+                                <div><dt>Total Products</dt><dd>{{ shop.stats.total_products }}</dd></div>
                             </dl>
                         </div>
                     </div>
                 </div>
 
+                <!-- Reviews tab -->
                 <div v-if="activeTab === 'reviews'" class="reviews-tab">
                     <div class="reviews-wrapper">
                         <Star class="w-12 h-12 text-gray-300 mx-auto mb-3" />

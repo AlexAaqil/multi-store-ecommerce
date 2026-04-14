@@ -9,6 +9,7 @@ use App\Http\Controllers\Shops\ShopController;
 use App\Http\Controllers\Products\ProductCategoryController;
 use App\Http\Controllers\Products\ProductController;
 use App\Http\Controllers\Products\ProductImageController;
+use App\Http\Controllers\Products\DiscountController;
 
 Route::controller(GuestPagesController::class)
     ->middleware([])
@@ -25,6 +26,7 @@ Route::middleware(['auth', 'verified'])
     Route::resource('shops', ShopController::class)->except('show');
     Route::resource('products', ProductController::class)->except('show');
     Route::delete('product-images/{image}', [ProductImageController::class, 'destroy'])->name('product-images.destroy');
+    Route::resource('discounts', DiscountController::class)->except('show');
 });
 
 // Admins

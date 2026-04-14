@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 
-const hotDeals = [
-    { id: 1, name: 'Aloe Vera Serum 50ml', shop: 'Amani Botanics', icon: 'https://media.gettyimages.com/id/1299655280/photo/apps-installed-on-a-samsung-galaxy-s21-smart-phone.jpg?s=612x612&w=gi&k=20&c=lhaG0yW0xaeexcoXhPyRacQdORcdjCEqv14ONGwluCg=', discount: '40% OFF', was: 'KES 1,200' }
-];
+const props = defineProps<{
+    hot_deals?: any[];
+}>();
 </script>
 
 <template>
@@ -13,25 +13,29 @@ const hotDeals = [
             <Link href="/deals" class="section-link">See all deals →</Link>
         </div>
         
-        <div class="hotdeals-wrapper">
+        <div v-if="hot_deals && hot_deals.length > 0" class="hotdeals-wrapper">
             <div 
-                v-for="deal in hotDeals" 
-                :key="deal.id"
+                v-for="product in hot_deals" 
+                :key="product.id"
                 class="product-card_deal"
-                @click="$inertia.visit(`/product/${deal.id}`)"
+                @click="$inertia.visit(`/product-details/${product.slug}`)"
             >
                 <div class="deal-icon">
-                    <img :src=deal.icon alt="">
+                    <img :src=product.image_url :alt=product.name />
                 </div>
                 <div class="deal-info">
-                    <h3 class="deal-name">{{ deal.name }}</h3>
-                    <p class="deal-shop">{{ deal.shop }}</p>
+                    <h3 class="deal-name">{{ product.name }}</h3>
+                    <p class="deal-shop">{{ product.shop_name }}</p>
                 </div>
                 <div class="deal-right">
-                    <div class="deal-discount">{{ deal.discount }}</div>
-                    <div class="deal-was">Was {{ deal.was }}</div>
+                    <div class="deal-discount">{{ product.percentage_off }}% OFF</div>
+                    <div class="deal-was">Was {{ product.old_price }}</div>
                 </div>
             </div>
+        </div>
+
+        <div v-else>
+            <p>No available Hot Deals right now</p>
         </div>
     </section>
 </template>

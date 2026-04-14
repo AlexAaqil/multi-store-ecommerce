@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<Props>(), {
     size: 'md'
 })
 
-const formatPrice = (price: number) => `KES ${price.toLocaleString()}`
+const formatPrice = (price: number) => `${price.toLocaleString()}`
 </script>
 
 <template>
@@ -21,7 +21,7 @@ const formatPrice = (price: number) => `KES ${price.toLocaleString()}`
                 'text-base font-semibold': size === 'md',
                 'text-xl font-bold': size === 'lg',
             }" class="text-gray-900">
-                {{ formatPrice(discountedPrice) }}
+                KES {{ formatPrice(discountedPrice) }}
             </span>
             <span :class="{
                 'text-xs': size === 'sm',
@@ -34,7 +34,7 @@ const formatPrice = (price: number) => `KES ${price.toLocaleString()}`
                 'text-xs px-1.5 py-0.5': size === 'sm',
                 'text-xs px-2 py-0.5': size === 'md',
                 'text-sm px-2.5 py-1': size === 'lg',
-            }" class="bg-red-100 text-red-600 font-medium rounded-full">
+            }" class="bg-green-100 text-green-600 font-medium rounded-full">
                 {{ percentageOff }}% Off
             </span>
         </template>
@@ -44,7 +44,7 @@ const formatPrice = (price: number) => `KES ${price.toLocaleString()}`
                 'text-base font-semibold': size === 'md',
                 'text-xl font-bold': size === 'lg',
             }" class="text-gray-900">
-                {{ formatPrice(originalPrice) }}
+                KES {{ formatPrice(originalPrice) }}
             </span>
         </template>
     </div>

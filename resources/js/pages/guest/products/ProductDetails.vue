@@ -3,8 +3,9 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import Button from '@/components/ui/button/Button.vue';
-import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Star, Minus, Plus, ShoppingCart, Heart, Share2, Truck, RotateCcw, ShieldCheck } from 'lucide-vue-next';
+import GuestLayout from '@/layouts/GuestLayout.vue';
+import ProductPrice from '@/components/custom/Products/Price.vue';
 
 interface ProductImage {
     id: number;
@@ -18,6 +19,8 @@ interface Product {
     slug: string;
     description: string | null;
     price: number;
+    discounted_price: number;
+    percentage_off: number;
     image_url: string;
     cost_price: number | null;
     stock_qty: number;
@@ -146,11 +149,12 @@ const averageRating = computed(() => {
                         </div>
 
                         <div class="product-price">
-                            <span class="current-price">{{ formatPrice(product.price) }}</span>
-                            <span v-if="product.cost_price" class="original-price">{{ formatPrice(product.cost_price) }}</span>
-                            <span v-if="product.cost_price" class="discount-badge">
-                                {{ Math.round(((product.cost_price - product.price) / product.cost_price) * 100) }}% OFF
-                            </span>
+                            <ProductPrice
+                                :original-price="product.price"
+                                :discounted-price="product.discounted_price"
+                                :percentage-off="product.percentage_off"
+                                size="lg"
+                            />
                         </div>
 
                         <div class="stock-status" :class="{ 'low-stock': product.stock_qty <= 5 && product.stock_qty > 0, 'out-of-stock': product.stock_qty === 0 }">

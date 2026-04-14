@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Products\Product;
+use App\Models\Products\Discount;
 use App\Concerns\HasUuid;
 
 class Shop extends Model
@@ -162,6 +163,11 @@ class Shop extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function discounts(): HasMany
+    {
+        return $this->hasMany(Discount::class);
     }
 
     public function getLogoUrlFullAttribute(): string

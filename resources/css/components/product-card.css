@@ -9,8 +9,16 @@
         }
     }
 
-    .product-info {
+    .info {
         @apply bg-white p-4 grid gap-0.5;
+
+        .name {
+            @apply font-medium text-sm text-gray-900 dark:text-foreground;
+        }
+
+        .category {
+            @apply text-xs text-gray-600 dark:text-gray-300;
+        }
 
         .product-price-info {
             .product-price {
@@ -27,6 +35,10 @@
                 }
             }
         }
+    }
+
+    button {
+        @apply w-full py-4 bg-gray-900 text-white font-medium dark:bg-white dark:text-gray-900;
     }
 }
 

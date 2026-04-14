@@ -15,6 +15,8 @@ const props = defineProps<{
     total_shops: number;
     total_products: number;
     total_shoppers: number;
+    shop_categories: any[];
+    hot_deals: any[];
 }>();
 
 provide('featured_shops', props.featured_shops);
@@ -29,9 +31,9 @@ provide('featured_shops', props.featured_shops);
                 :total_products="total_products"
                 :total_shoppers="total_shoppers"
             />
-            <CategoryPills />
+            <CategoryPills :shop_categories="shop_categories" />
             <FeaturedShops />
-            <HotDeals />
+            <HotDeals :hot_deals="hot_deals" />
         </div>
     </GuestLayout>
 </template>

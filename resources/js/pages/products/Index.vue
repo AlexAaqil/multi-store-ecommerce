@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Pencil, Trash2, Plus, Package } from 'lucide-vue-next';
+import { Pencil, Trash2, Plus, Package, Clock, Tag, Calendar } from 'lucide-vue-next';
 import Toast from '@/components/custom/ToastNotification/Index.vue';
 import PageHeader from '@/components/custom/PageHeader.vue';
 import DeleteConfirmationDialog from '@/components/custom/DeleteConfirmation.vue';
 import productsRoutes from '@/routes/products';
 
 const page = usePage<any>();
+
+interface Discount {
+    name: string;
+    type: number;
+    value: number;
+    formatted_value: string;
+    percentage_off: number;
+    starts_at: string;
+    expires_at: string;
+    is_scheduled: boolean;
+    starts_in_days: number | null;
+}
 
 interface Product {
     id: number;
@@ -22,6 +34,9 @@ interface Product {
     is_active: boolean;
     created_at: string;
     image_url: string;
+    percentage_off: number | null;
+    discounted_price: number | null;
+    discount: Discount | null;
 }
 
 interface Props {
@@ -79,6 +94,34 @@ const deleteProduct = (id: number) => {
         preserveScroll: true,
     });
 };
+
+// Helper function to format discount display
+const getDiscountDisplay = (product: Product) => {
+    if (!product.discount) return null;
+    
+    const discount = product.discount;
+    
+    // For scheduled discounts
+    if (discount.is_scheduled) {
+        return {
+            text: `Starts in ${discount.starts_in_days} day${discount.starts_in_days !== 1 ? 's' : ''}`,
+            variant: 'scheduled',
+            tooltip: `${discount.name}: ${discount.formatted_value} off - Starts ${new Date(discount.starts_at).toLocaleString()}`
+        };
+    }
+    
+    // For active discounts
+    return {
+        text: discount.formatted_value,
+        variant: 'active',
+        tooltip: `${discount.name}: ${discount.formatted_value} off - Valid until ${new Date(discount.expires_at).toLocaleString()}`
+    };
+};
+
+// Format date for display
+const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString();
+};
 </script>
 
 <template>
@@ -106,10 +149,10 @@ const deleteProduct = (id: number) => {
                     <TableRow>
                         <TableHead>Product</TableHead>
                         <TableHead>SKU</TableHead>
+                        <TableHead>Discount</TableHead>
                         <TableHead>Price</TableHead>
                         <TableHead>Stock</TableHead>
                         <TableHead>Category</TableHead>
-                        <TableHead>Status</TableHead>
                         <TableHead class="thead-actions">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -122,11 +165,58 @@ const deleteProduct = (id: number) => {
                                     <img v-if="product.image_url" :src="product.image_url" />
                                     <Package v-else class="w-5 h-5 text-gray-400" />
                                 </div>
-                                <span class="font-medium">{{ product.name }}</span>
+                                <div class="product-info">
+                                    <span class="font-medium">
+                                        {{ product.name }}
+                                        <span :class="[
+                                            'px-2 py-1 text-xs rounded-full ml-2',
+                                            product.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                        ]">
+                                            {{ product.is_active ? 'Active' : 'Inactive' }}
+                                        </span>
+                                    </span>
+                                </div>
                             </div>
                         </TableCell>
                         <TableCell class="text-sm text-gray-500">{{ product.sku ?? '-' }}</TableCell>
-                        <TableCell class="font-medium">KES {{ product.price.toLocaleString() }}</TableCell>
+                        <TableCell>
+                            <div v-if="product.discount" class="discount-cell">
+                                <!-- Tooltip wrapper -->
+                                <div class="relative inline-block group">
+                                    <span 
+                                        :class="[
+                                            'px-2 py-1 text-xs font-semibold rounded-full cursor-help',
+                                            getDiscountDisplay(product)?.variant === 'scheduled' 
+                                                ? 'bg-yellow-100 text-yellow-700' 
+                                                : 'bg-red-100 text-red-700'
+                                        ]"
+                                    >
+                                        {{ getDiscountDisplay(product)?.text }}
+                                    </span>
+                                    
+                                    <!-- Tooltip -->
+                                    <div class="absolute z-10 invisible group-hover:visible bg-gray-900 text-white text-xs rounded-lg py-2 px-3 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64">
+                                        <div class="font-semibold mb-1">{{ product.discount.name }}</div>
+                                        <div class="text-gray-300 text-xs">
+                                            {{ product.discount.formatted_value }} off
+                                        </div>
+                                        <div class="text-gray-400 text-xs mt-1">
+                                            <Clock class="inline w-3 h-3 mr-1" />
+                                            {{ formatDate(product.discount.starts_at) }} - {{ formatDate(product.discount.expires_at) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span v-else class="text-gray-400 text-sm">-</span>
+                        </TableCell>
+                        <TableCell>
+                            <div class="price-cell">
+                                <span class="font-medium text-gray-900">
+                                    KES {{ (product.discounted_price || product.price).toLocaleString() }}
+                                </span>
+                                <span v-if="product.discount" class="line-through text-gray-400 text-sm">{{ ' ' + product.price.toLocaleString() }}</span>
+                            </div>
+                        </TableCell>
                         <TableCell>
                             <span :class="[
                                 'px-2 py-1 text-xs rounded-full',
@@ -138,14 +228,6 @@ const deleteProduct = (id: number) => {
                             </span>
                         </TableCell>
                         <TableCell>{{ product.category || 'Uncategorized' }}</TableCell>
-                        <TableCell>
-                            <span :class="[
-                                'px-2 py-1 text-xs rounded-full',
-                                product.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                            ]">
-                                {{ product.is_active ? 'Active' : 'Inactive' }}
-                            </span>
-                        </TableCell>
                         <TableCell class="tbody-actions">
                             <div class="actions">
                                 <Link :href="productsRoutes.edit(product.id).url" class="action edit">
