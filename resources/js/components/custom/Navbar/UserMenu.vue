@@ -8,9 +8,9 @@ const user = computed(() => page.props.auth?.user);
 const isOpen = ref(false);
 
 const menuItems = [
-  { label: 'My Profile', icon: CircleUser, href: '/profile' },
+  // { label: 'My Profile', icon: CircleUser, href: '/settings/profile' },
   { label: 'My Orders', icon: ShoppingBag, href: '/orders' },
-  { label: 'Wishlist', icon: Heart, href: '/wishlist' },
+  // { label: 'Wishlist', icon: Heart, href: '/wishlist' },
   { label: 'Settings', icon: Cog, href: '/settings' },
 ];
 
@@ -44,7 +44,7 @@ const closeMenu = () => {
       @click.stop
     >
       <div class="px-4 py-3 border-b border-gray-100">
-        <p class="text-sm font-medium text-gray-900">{{ user?.full_name }}</p>
+        <p class="text-sm font-medium text-gray-900">{{ user?.name }}</p>
         <p class="text-xs text-gray-500 mt-0.5">{{ user?.email }}</p>
       </div>
       
