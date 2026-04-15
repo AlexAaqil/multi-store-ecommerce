@@ -1,8 +1,8 @@
 <script setup lang="ts">
 interface Props {
-    originalPrice: number
+    price: number
     discountedPrice: number | null
-    percentageOff: number | null
+    discountPct: number | null
     size?: 'sm' | 'md' | 'lg'
 }
 
@@ -15,12 +15,12 @@ const formatPrice = (price: number) => `${price.toLocaleString()}`
 
 <template>
     <div class="flex items-center gap-2 flex-wrap">
-        <template v-if="discountedPrice !== null && percentageOff !== null">
+        <template v-if="discountedPrice !== null && discountPct !== null">
             <span :class="{
                 'text-sm font-semibold': size === 'sm',
                 'text-base font-semibold': size === 'md',
                 'text-xl font-bold': size === 'lg',
-            }" class="text-gray-900">
+            }" class="text-gray-900 dark:text-foreground">
                 KES {{ formatPrice(discountedPrice) }}
             </span>
             <span :class="{
@@ -28,14 +28,14 @@ const formatPrice = (price: number) => `${price.toLocaleString()}`
                 'text-sm': size === 'md',
                 'text-base': size === 'lg',
             }" class="text-gray-400 line-through">
-                {{ formatPrice(originalPrice) }}
+                {{ formatPrice(price) }}
             </span>
             <span :class="{
                 'text-xs px-1.5 py-0.5': size === 'sm',
                 'text-xs px-2 py-0.5': size === 'md',
                 'text-sm px-2.5 py-1': size === 'lg',
             }" class="bg-green-100 text-green-600 font-medium rounded-full">
-                {{ percentageOff }}% Off
+                {{ discountPct }}% Off
             </span>
         </template>
         <template v-else>
@@ -43,8 +43,8 @@ const formatPrice = (price: number) => `${price.toLocaleString()}`
                 'text-sm font-semibold': size === 'sm',
                 'text-base font-semibold': size === 'md',
                 'text-xl font-bold': size === 'lg',
-            }" class="text-gray-900">
-                KES {{ formatPrice(originalPrice) }}
+            }" class="text-gray-900 dark:text-foreground">
+                KES {{ formatPrice(price) }}
             </span>
         </template>
     </div>

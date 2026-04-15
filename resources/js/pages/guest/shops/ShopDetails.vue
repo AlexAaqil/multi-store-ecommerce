@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { Star } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
 import GuestLayout from '@/layouts/GuestLayout.vue';
-import { Star } from 'lucide-vue-next';
-import ProductPrice from '@/components/custom/Products/Price.vue';
+import ProductCard from '@/pages/guest/components/ProductCard.vue';
+import { useCartStore } from '@/stores/cart';
 
 interface Product {
     id: number;
@@ -15,8 +16,8 @@ interface Product {
     category: string | null;
     stock_qty: number;
     created_at: string;
-    discounted_price: number | null;   // fix: was non-nullable
-    percentage_off: number | null;     // fix: was non-nullable
+    discounted_price: number | null;
+    discount_pct: number | null;
 }
 
 interface ShopStats {
@@ -70,6 +71,11 @@ const tabs = [
 const discountedProducts = computed(() =>
     props.products.data.filter(p => p.discounted_price !== null)
 );
+
+const cartStore = useCartStore();
+onMounted(() => {
+    cartStore.fetchCart();
+});
 </script>
 
 <template>
@@ -136,7 +142,7 @@ const discountedProducts = computed(() =>
                             :class="[
                                 'pb-3 text-sm font-medium transition-colors',
                                 activeTab === tab.id
-                                    ? 'border-b-2 border-gray-900 text-gray-900'
+                                    ? 'border-b-2 border-gray-900 text-gray-900 dark:text-gray-200'
                                     : 'text-gray-500 hover:text-gray-700'
                             ]"
                         >
@@ -155,28 +161,13 @@ const discountedProducts = computed(() =>
                 <!-- All Products tab -->
                 <div v-if="activeTab === 'products'" class="products-tab">
                     <div v-if="products.data.length > 0" class="products-wrapper">
-                        <div
+                        <ProductCard
                             v-for="product in products.data"
                             :key="product.id"
-                            class="shop-details-product-card"
-                        >
-                            <Link :href="`/product-details/${product.slug}`">
-                                <div class="image">
-                                    <img :src="product.image_url" :alt="product.name" />
-                                </div>
-                            </Link>
-                            <div class="info">
-                                <h3 class="name">{{ product.name }}</h3>
-                                <p class="category">{{ product.category || 'Uncategorized' }}</p>
-                                <ProductPrice
-                                    :original-price="product.price"
-                                    :discounted-price="product.discounted_price"
-                                    :percentage-off="product.percentage_off"
-                                    size="sm"
-                                />
-                            </div>
-                            <button @click.stop="">Add To Cart</button>
-                        </div>
+                            :product="product"
+                            :show-stock-indicator="true"
+                            :show-add-to-cart="true"
+                        />
                     </div>
                     <div v-else class="py-12 text-center text-gray-400 text-sm">
                         No products available yet.
@@ -186,29 +177,13 @@ const discountedProducts = computed(() =>
                 <!-- On Offer tab — only discounted products -->
                 <div v-if="activeTab === 'on_offer'" class="products-tab">
                     <div v-if="discountedProducts.length > 0" class="products-wrapper">
-                        <div
+                        <ProductCard
                             v-for="product in discountedProducts"
                             :key="product.id"
-                            class="shop-details-product-card"
-                        >
-                            <Link :href="`/product-details/${product.slug}`">
-                                <div class="image">
-                                    <img :src="product.image_url" :alt="product.name" />
-                                </div>
-                            </Link>
-                            <div class="info">
-                                <h3 class="name">{{ product.name }}</h3>
-                                <p class="category">{{ product.category || 'Uncategorized' }}</p>
-                                <!-- Always has a discount here so the discounted layout always shows -->
-                                <ProductPrice
-                                    :original-price="product.price"
-                                    :discounted-price="product.discounted_price"
-                                    :percentage-off="product.percentage_off"
-                                    size="sm"
-                                />
-                            </div>
-                            <button @click.stop="">Add To Cart</button>
-                        </div>
+                            :product="product"
+                            :show-stock-indicator="true"
+                            :show-add-to-cart="true"
+                        />
                     </div>
                     <div v-else class="py-12 text-center text-gray-400 text-sm">
                         No active offers in this shop right now.

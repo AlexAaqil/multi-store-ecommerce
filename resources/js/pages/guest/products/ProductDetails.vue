@@ -20,7 +20,7 @@ interface Product {
     description: string | null;
     price: number;
     discounted_price: number;
-    percentage_off: number;
+    discount_pct: number;
     image_url: string;
     cost_price: number | null;
     stock_qty: number;
@@ -150,9 +150,9 @@ const averageRating = computed(() => {
 
                         <div class="product-price">
                             <ProductPrice
-                                :original-price="product.price"
+                                :price="product.price"
                                 :discounted-price="product.discounted_price"
-                                :percentage-off="product.percentage_off"
+                                :discount-pct="product.discount_pct"
                                 size="lg"
                             />
                         </div>
