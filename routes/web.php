@@ -10,6 +10,7 @@ use App\Http\Controllers\Products\ProductCategoryController;
 use App\Http\Controllers\Products\ProductController;
 use App\Http\Controllers\Products\ProductImageController;
 use App\Http\Controllers\Products\DiscountController;
+use App\Http\Controllers\Sales\CartController;
 
 Route::controller(GuestPagesController::class)
     ->middleware([])
@@ -19,6 +20,13 @@ Route::controller(GuestPagesController::class)
         Route::get('product-details/{product:slug}', 'productDetails')->name('product-details-page');
         Route::get('deals', 'dealsAndOffersPage')->name('deals-page');
     });
+
+Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('cart/summary', [CartController::class, 'summary'])->name('cart.summary');
+Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::put('cart/item/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('cart/item/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+Route::delete('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 Route::middleware(['auth', 'verified'])
     ->group(function () {

@@ -20,36 +20,27 @@ class GuestPagesController extends Controller
     
     public function homePage(Request $request)
     {
-        // Get active shops for featured section
         $query = Shop::with('category')->where('is_active', true);
-        
-        // Prioritize verified shops
         $query->orderBy('is_verified', 'desc');
         
-        // Optional: Filter by category if requested
         if ($request->has('category') && $request->category !== 'All') {
             $query->whereHas('category', function ($q) use ($request) {
                 $q->where('name', $request->category);
             });
         }
         
-        // Random ordering for variety
         $query->inRandomOrder();
-        
         $shops = $query->limit(4)->get();
         
-        // If not enough shops, get more from active but not verified
         if ($shops->count() < 4) {
             $additional = Shop::where('is_active', true)
                 ->whereNotIn('id', $shops->pluck('id'))
                 ->inRandomOrder()
                 ->limit(4 - $shops->count())
                 ->get();
-            
             $shops = $shops->concat($additional);
         }
 
-        // Transform shops to include full image URLs
         $featured_shops = $shops->map(function ($shop) {
             return [
                 'id' => $shop->id,
@@ -69,15 +60,10 @@ class GuestPagesController extends Controller
 
         $shop_categories = ShopCategory::orderBy('name')->get();
         
-        // Get all active discounts grouped by shop
         $active_discounts = Discount::active()->with('shop')->get()->groupBy('shop_id');
         
-        // Get flash sales (discount < 40%)
         $flash_sales = $this->product_deals_service->getSmallDiscounts($active_discounts, 40, 4);
-        
-        // Get clearance sales (discount >= 40%)
         $clearance_sales = $this->product_deals_service->getBigDiscounts($active_discounts, 40, 3);
-
         $hot_deals = $this->product_deals_service->getRandomDiscountedProducts($active_discounts, 3);
         
         return inertia('guest/homepage/Home', [
@@ -87,7 +73,7 @@ class GuestPagesController extends Controller
             'hot_deals' => $hot_deals,
             'total_shops' => Shop::where('is_active', true)->count(),
             'total_products' => Product::where('is_active', true)->count(),
-            'total_shoppers' => 000,
+            'total_shoppers' => 0,
             'shop_categories' => $shop_categories,
         ]);
     }
@@ -99,43 +85,27 @@ class GuestPagesController extends Controller
             ->orWhere('slug', $slug)
             ->firstOrFail();
 
-        // Load active discounts for this shop ONCE
+        // Load discounts once for this shop
         $shop_discounts = Discount::active()
             ->forShop($shop->id)
             ->get();
 
-        // Get products for this shop
+        // Get products and transform using the service
         $products = $shop->products()
             ->with('category')
             ->where('is_active', true)
             ->latest()
             ->paginate(12)
             ->through(function ($product) use ($shop_discounts) {
-                $discount = $this->discount_service->resolveForProduct($product, $shop_discounts);
-                $discounted_price = $discount ? $this->discount_service->calculateDiscountedPrice($product->price, $discount) : null;
-                $percentage_off   = $discount ? $this->discount_service->calculatePercentageOff($product->price, $discount) : null;
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'slug' => $product->slug,
-                    'price' => $product->price,
-                    'cost_price' => $product->cost_price,
-                    'stock_qty' => $product->stock_qty,
-                    'category' => $product->category?->name,
-                    'is_active' => $product->is_active,
-                    'image_url' => $product->primary_image_url,
-                    'created_at' => $product->created_at,
-                    'discounted_price' => $discounted_price,
-                    'percentage_off'   => $percentage_off,
-                ];
+                // Service handles everything - with or without discount
+                return $this->product_deals_service->transformProduct($product, $shop_discounts);
             });
         
-        // Get shop statistics
         $shop_stats = [
             'total_products' => $shop->products()->count(),
-            'total_sales' => 000,
-            'total_reviews' => 000,
-            'average_rating' => 000,
+            'total_sales' => 0,
+            'total_reviews' => 0,
+            'average_rating' => 0,
             'response_rate' => 98,
             'response_time' => 'within 24 hours',
         ];
@@ -170,29 +140,18 @@ class GuestPagesController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
         
-        // Get active discounts for this product
+        // Load discounts once for this shop
         $shop_discounts = Discount::active()
             ->forShop($product->shop_id)
             ->get();
         
-        $discount = $this->discount_service->resolveForProduct($product, $shop_discounts);
-        $discounted_price = $discount ? $this->discount_service->calculateDiscountedPrice($product->price, $discount) : null;
-        $percentage_off = $discount ? $this->discount_service->calculatePercentageOff($product->price, $discount) : null;
+        // Use the service to transform the product
+        $transformed = $this->product_deals_service->transformProduct($product, $shop_discounts);
         
         return inertia('guest/products/ProductDetails', [
-            'product' => [
-                'id' => $product->id,
-                'name' => $product->name,
-                'slug' => $product->slug,
+            'product' => array_merge($transformed, [
                 'sku' => $product->sku,
-                'price' => $product->price,
-                'discounted_price' => $discounted_price,
-                'percentage_off' => $percentage_off,
                 'description' => $product->description,
-                'image_url' => $product->primary_image_url,
-                'is_active' => $product->is_active,
-                'stock_qty' => $product->stock_qty,
-                'category' => $product->category?->name,
                 'images' => $product->images->map(function ($image) {
                     return [
                         'id' => $image->id,
@@ -207,7 +166,7 @@ class GuestPagesController extends Controller
                     'logo_url' => $product->shop->logo_url_full,
                     'is_verified' => $product->shop->is_verified,
                 ]
-            ],
+            ]),
             'reviews' => [],
             'related_products' => [],
         ]);
@@ -217,7 +176,6 @@ class GuestPagesController extends Controller
     {
         $product_categories = ProductCategory::orderBy('name')->get();
 
-        // Get all active discounts grouped by shop
         $active_discounts = Discount::active()->with('shop')->get()->groupBy('shop_id');
 
         if ($active_discounts->isEmpty()) {
@@ -231,9 +189,7 @@ class GuestPagesController extends Controller
         }
 
         $all_deals = $this->product_deals_service->getAllDiscountedProducts($active_discounts);
-
         $flash_sales = $this->product_deals_service->getSmallDiscounts($active_discounts, 40, 4);
-        
         $clearance_sales = $this->product_deals_service->getBigDiscounts($active_discounts, 40, 4);
 
         return inertia('guest/dealspage/Deals', [
