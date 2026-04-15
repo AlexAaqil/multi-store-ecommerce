@@ -30,7 +30,7 @@ const props = defineProps<{
                 </div>
                 <div class="deal-right">
                     <div class="deal-discount">{{ product.discount_pct }}% OFF</div>
-                    <div class="deal-was">Was KES {{ product.old_price }}</div>
+                    <div class="deal-was">Was KES {{ product.price }}</div>
                 </div>
             </div>
         </div>
