@@ -233,7 +233,10 @@ Schema::create('discount_products', function (Blueprint $table) {
 
 Schema::create('carts', function (Blueprint $table) {
     $table->id();
-    $table->foreignId('user_id')->unique()->constrained('users')->cascadeOnDelete(); // One cart per user
+    $table->string('session_id')->nullable()->unique();
+    $table->string('currency', 3)->default('KES');
+    $table->timestamp('expires_at')->nullable();
+    $table->foreignId('user_id')->nullable()->unique()->constrained('users')->cascadeOnDelete(); // One cart per user
     $table->timestamps();
 });
 
@@ -243,9 +246,10 @@ Schema::create('cart_items', function (Blueprint $table) {
     $table->foreignId('cart_id')->constrained('carts')->cascadeOnDelete();
     $table->foreignId('product_id')->constrained('products')->nullOnDelete();
     $table->foreignId('variant_id')->nullable()->constrained('product_variants')->nullOnDelete();
+    $table->foreignId('shop_id')->constrained('shops')->cascadeOnDelete();
     $table->timestamps();
 
-    $table->unique(['cart_id', 'product_id', 'variant_id']);
+    $table->unique(['cart_id', 'product_id', 'variant_id', 'shop_id']);
 });
 
 Schema::create('coupons', function (Blueprint $table) {
