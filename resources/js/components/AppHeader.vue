@@ -326,10 +326,10 @@ const toggleTheme = () => {
                                 size="icon"
                                 class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
                             >
-                                <Avatar v-if="auth.user" class="size-8 overflow-hidden rounded-full">
+                                <Avatar v-if="auth.user" class="size-8 overflow-hidden rounded-full bg-gray-50 dark:bg-gray-200">
                                     <AvatarImage
-                                        v-if="auth.user.avatar"
-                                        :src="auth.user.avatar"
+                                        v-if="auth.user.image_url"
+                                        :src="auth.user.image_url"
                                         :alt="auth.user.name"
                                     />
                                     <AvatarFallback

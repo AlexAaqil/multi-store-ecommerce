@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form, Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/DeleteUser.vue';
 import Heading from '@/components/Heading.vue';
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
+import { Camera, X } from 'lucide-vue-next';
 
 type Props = {
     mustVerifyEmail: boolean;
@@ -31,6 +32,100 @@ defineOptions({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const imagePreview = ref<string | null>(user.value.image ? `/storage/users/${user.value.image}` : null);
+const isUploading = ref(false);
+
+const handleImageUpload = async (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    
+    if (!file) return;
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file');
+        return;
+    }
+    
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Image size must be less than 2MB');
+        return;
+    }
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imagePreview.value = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+    
+    // Upload the file
+    isUploading.value = true;
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+        const response = await fetch('/settings/profile/image', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Upload failed');
+        }
+        
+        const data = await response.json();
+        // Update the user data in the page props
+        page.props.auth.user.image = data.image;
+        
+        // Show success message (you can add a toast notification here)
+        console.log('Image updated successfully');
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert('Failed to upload image. Please try again.');
+        // Reset preview on error
+        imagePreview.value = user.value.image ? `/storage/users/${user.value.image}` : null;
+    } finally {
+        isUploading.value = false;
+        // Clear the input
+        input.value = '';
+    }
+};
+
+const removeImage = async () => {
+    if (!confirm('Remove your profile picture?')) return;
+    
+    isUploading.value = true;
+    
+    try {
+        const response = await fetch('/settings/profile/image', {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Remove failed');
+        }
+        
+        const data = await response.json();
+        page.props.auth.user.image = null;
+        imagePreview.value = null;
+        
+        console.log('Image removed successfully');
+    } catch (error) {
+        console.error('Remove error:', error);
+        alert('Failed to remove image. Please try again.');
+    } finally {
+        isUploading.value = false;
+    }
+};
 </script>
 
 <template>
@@ -39,6 +134,66 @@ const user = computed(() => page.props.auth.user);
     <h1 class="sr-only">Profile settings</h1>
 
     <div class="flex flex-col space-y-6">
+        <!-- Profile Image Section -->
+        <div class="border-b pb-6">
+            <Heading
+                variant="small"
+                title="Profile picture"
+                description="Update your profile image"
+            />
+            
+            <div class="mt-4 flex items-center gap-6">
+                <!-- Image Preview -->
+                <div class="relative">
+                    <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                        <img 
+                            v-if="imagePreview" 
+                            :src="imagePreview" 
+                            :alt="user.name"
+                            class="w-full h-full object-cover"
+                        />
+                        <div v-else class="text-3xl font-medium text-gray-400">
+                            {{ user.name?.charAt(0) || 'U' }}
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Button -->
+                    <label 
+                        class="absolute bottom-0 right-0 p-1.5 bg-white rounded-full shadow-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        :class="{ 'opacity-50 cursor-not-allowed': isUploading }"
+                    >
+                        <Camera class="w-4 h-4 text-gray-600" />
+                        <input 
+                            type="file" 
+                            accept="image/*"
+                            class="hidden"
+                            @change="handleImageUpload"
+                            :disabled="isUploading"
+                        />
+                    </label>
+                    
+                    <!-- Remove Button -->
+                    <button 
+                        v-if="imagePreview"
+                        @click="removeImage"
+                        class="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                        :disabled="isUploading"
+                    >
+                        <X class="w-3 h-3 text-white" />
+                    </button>
+                </div>
+                
+                <div class="flex-1">
+                    <p class="text-sm text-gray-600">
+                        Recommended: Square image, at least 200x200 pixels. Max size 2MB.
+                    </p>
+                    <p v-if="isUploading" class="text-xs text-blue-600 mt-1">
+                        Uploading...
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <Heading
             variant="small"
             title="Profile information"

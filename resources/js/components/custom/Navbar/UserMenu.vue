@@ -30,7 +30,7 @@ const closeMenu = () => {
       class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
     >
       <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">
-        {{ user?.name?.charAt(0) || 'U' }}
+        <img :src=user?.image_url :alt=user?.name?.charAt(0)>
       </div>
       <span class="hidden sm:inline text-sm font-medium text-gray-700">
         {{ user?.name?.split(' ')[0] }}

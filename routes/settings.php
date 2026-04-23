@@ -9,6 +9,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // image routes
+    Route::post('/settings/profile/image', [ProfileController::class, 'uploadImage'])->name('profile.image.upload');
+    Route::delete('/settings/profile/image', [ProfileController::class, 'removeImage'])->name('profile.image.remove');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

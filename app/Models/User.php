@@ -39,6 +39,7 @@ class User extends Authenticatable
         'role_label',
         'status_label',
         'is_active',
+        'image_url',
         // 'branch'
     ];
 
@@ -178,6 +179,14 @@ class User extends Authenticatable
         }
         
         return $query;
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->image) {
+            return asset('storage/users/' . $this->image);
+        }
+        return null;
     }
 
     public function scopeSearch($query, $search)
