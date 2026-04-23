@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link, usePage, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted, watch } from 'vue';
-import { HomeIcon, BadgeDollarSign, MessageCircleMore, Menu, X, Barcode, ShoppingCart, LayoutDashboard } from 'lucide-vue-next';
+import { HomeIcon, BadgeDollarSign, MessageCircleMore, Menu, X, Barcode, ShoppingCart, LayoutDashboard, StoreIcon } from 'lucide-vue-next';
 import { Sun, Moon } from 'lucide-vue-next';
 import { useAppearance } from '@/composables/useAppearance';
 import { useCartStore } from '@/stores/cart';
@@ -30,6 +30,7 @@ watch(user, (newUser, oldUser) => {
 const tabs = computed(() => {
     const tabsList = [
         { id: 'home', label: 'Discover', icon: HomeIcon, path: '/' },
+        { id: 'discover-shops', label: 'Shops', icon: StoreIcon, path: '/discover-shops' },
         { id: 'deals', label: 'Deals & Offers', icon: BadgeDollarSign, path: '/deals' },
         { id: 'social', label: 'Community', icon: MessageCircleMore, path: '/community', hasNotification: true },
     ];

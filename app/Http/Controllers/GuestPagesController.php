@@ -205,4 +205,38 @@ class GuestPagesController extends Controller
     {
         return 'about-page';
     }
+
+    public function discoverShops(Request $request)
+    {
+        $query = Shop::with('category')->where('is_active', true);
+
+        if ($request->filled('search')) {
+            $query->search($request->search);
+        }
+        
+        $shops = $query->orderBy('name')
+            ->paginate(20)
+            ->through(function ($shop) {
+                return [
+                    'id' => $shop->id,
+                    'name' => $shop->name,
+                    'slug' => $shop->public_slug,
+                    'category' => $shop->category?->name,
+                    'description' => $shop->description,
+                    'contact_email' => $shop->contact_email,'contact_phone' => $shop->contact_phone,
+                    'rating' => 4.9,
+                    'reviews_count' => 312,
+                    'logo_image' => $shop->logo_url_full,
+                    'cover_image' => $shop->cover_url_full,
+                    'is_active' => $shop->is_active,
+                    'is_verified' => $shop->is_verified,
+                    'created_at' => $shop->created_at
+                ];
+            });
+
+        return inertia('guest/shops/DiscoverShops', [
+            'shops' => $shops,
+            'filters' => $request->only(['search'])
+        ]);
+    }
 }

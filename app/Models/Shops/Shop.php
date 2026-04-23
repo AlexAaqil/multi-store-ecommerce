@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 use App\Models\Products\Product;
 use App\Models\Products\Discount;
@@ -29,6 +30,12 @@ class Shop extends Model
     protected $appends = [
         'logo_url_full',
         'cover_url_full',
+    ];
+
+    protected array $searchable = [
+        'name',
+        'contact_email',
+        'contact_phone',
     ];
 
     protected static function booted()
@@ -186,5 +193,40 @@ class Shop extends Model
         }
 
         return asset("storage/shops/covers/{$this->cover_image}");
+    }
+
+    public function scopeSearch($query, ?string $searchTerm)
+    {
+        if (!$searchTerm) {
+            return $query;
+        }
+
+        $fields = ['name', 'contact_email', 'contact_phone'];
+
+        $terms = preg_split('/\s+/', trim(strtolower($searchTerm)));
+
+        // Expand terms: sneakers → sneaker
+        $expandedTerms = [];
+
+        foreach ($terms as $term) {
+            $expandedTerms[] = $term;
+
+            // Simple plural handling
+            if (str_ends_with($term, 's')) {
+                $expandedTerms[] = rtrim($term, 's');
+            } else {
+                $expandedTerms[] = $term . 's';
+            }
+        }
+
+        return $query->where(function ($q) use ($expandedTerms, $fields) {
+            foreach ($expandedTerms as $term) {
+                $q->orWhere(function ($sub) use ($term, $fields) {
+                    foreach ($fields as $field) {
+                        $sub->orWhereRaw("LOWER($field) LIKE ?", ["%{$term}%"]);
+                    }
+                });
+            }
+        });
     }
 }
