@@ -52,15 +52,13 @@ const clearSearch = () => {
 
 <template>
     <GuestLayout>
-        <div class="main_container max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="main_container">
             <section class="Hero flex items-center justify-between">
-                <!-- Header -->
                 <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900">Discover Shops</h1>
-                    <p class="text-gray-600 mt-2">Browse through our collection of shops</p>
+                    <h1 class="text-3xl font-bold">Discover Shops</h1>
+                    <p class="mt-2">Browse through our collection of shops</p>
                 </div>
 
-                <!-- Search Bar -->
                 <div class="mb-8">
                     <div class="max-w-md">
                         <label for="search" class="sr-only">Search shops</label>
@@ -71,7 +69,7 @@ const clearSearch = () => {
                                 type="text"
                                 placeholder="Search by shop name, contact email, or contact phone..."
                                 @keyup.enter="handleSearch"
-                                class="w-full rounded-sm border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 py-1 px-4 pr-10"
+                                class="w-full rounded-sm border-gray-700 shadow-sm focus:border-gray-500 focus:ring-gray-500 py-1 px-4 pr-10"
                             />
                             <!-- Clear button (X) -->
                             <button
@@ -89,69 +87,37 @@ const clearSearch = () => {
                 </div>
             </section>
 
-            <!-- Shops Grid -->
-            <div v-if="shops.data.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Link
-                    v-for="shop in shops.data"
+            <section v-if="shops.data.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div 
+                    v-for="shop in shops.data" 
                     :key="shop.id"
-                    :href="`/shop-details/${shop.slug}`"
-                    class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    class="shop-card"
+                    @click="$inertia.visit(`/shop-details/${shop.slug}`)"
                 >
-                    <!-- Cover Image -->
-                    <div class="h-32 bg-gray-200 relative">
-                        <img
-                            v-if="shop.cover_image"
-                            :src="shop.cover_image"
-                            :alt="shop.name"
-                            class="w-full h-full object-cover"
-                        />
-                        <div v-else class="w-full h-full bg-gradient-to-r from-gray-400 to-gray-600"></div>
-                        
-                        <!-- Verified Badge -->
-                        <div v-if="shop.is_verified" class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                            Verified
+                    <div class="shop-card-images">
+                        <div class="shop-card-cover">
+                            <img :src="shop.cover_image" alt="Shop cover Image">
+                        </div>
+
+                        <div class="shop-card-logo">
+                            <img :src="shop.logo_image" alt="Shop logo">
                         </div>
                     </div>
 
-                    <div class="p-4">
-                        <!-- Logo and Name -->
-                        <div class="flex items-start gap-3">
-                            <div class="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
-                                <img
-                                    v-if="shop.logo_image"
-                                    :src="shop.logo_image"
-                                    :alt="shop.name"
-                                    class="w-full h-full object-cover"
-                                />
-                                <div v-else class="w-full h-full flex items-center justify-center text-gray-500 text-lg font-bold">
-                                    {{ shop.name.charAt(0) }}
-                                </div>
+                    <div class="shop-card-body">
+                        <h3 class="shop-card-name">{{ shop.name }}</h3>
+                        <p class="shop-card-category">{{ shop.category || 'Uncategorized' }}</p>
+                        <div class="shop-card-meta">
+                            <div class="shop-rating">
+                                <span class="star">★</span> 
+                                <span class="rating">{{ shop.rating }}</span>
+                                <span class="reviews">({{ shop.reviews_count }} reviews)</span>
                             </div>
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-lg text-gray-900">{{ shop.name }}</h3>
-                                <p v-if="shop.category" class="text-sm text-gray-500">{{ shop.category }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <p class="text-gray-600 text-sm mt-2 line-clamp-2">
-                            {{ shop.description || 'No description available' }}
-                        </p>
-
-                        <!-- Rating and Stats -->
-                        <div class="mt-3 flex items-center justify-between">
-                            <div class="flex items-center gap-1">
-                                <span class="text-yellow-400">★</span>
-                                <span class="text-sm font-medium">{{ shop.rating }}</span>
-                                <span class="text-xs text-gray-500">({{ shop.reviews_count }} reviews)</span>
-                            </div>
-                            <div class="text-xs text-gray-500">
-                                {{ shop.is_active ? 'Open' : 'Closed' }}
-                            </div>
+                            <span class="badge">{{ shop.is_active ? 'Open' : 'Closed' }}</span>
                         </div>
                     </div>
-                </Link>
-            </div>
+                </div>
+            </section>
 
             <!-- No Results -->
             <div v-else class="text-center py-12">

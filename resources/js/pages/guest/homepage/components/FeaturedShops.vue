@@ -37,9 +37,11 @@ const featured_shops = inject<Shop[]>('featured_shops', []);
                     <p class="shop-card-category">{{ shop.category || 'Uncategorized' }}</p>
                     <div class="shop-card-meta">
                         <div class="shop-rating">
-                            <span>★</span> {{ shop.rating }} · {{ shop.reviews_count }} reviews
+                            <span class="star">★</span> 
+                            <span class="rating">{{ shop.rating }}</span>
+                            <span class="reviews">({{ shop.reviews_count }} reviews)</span>
                         </div>
-                        <span class="badge" :class="shop.status_class">{{ shop.status }}</span>
+                        <span class="badge">{{ shop.is_active ? 'Open' : 'Closed' }}</span>
                     </div>
                 </div>
             </div>

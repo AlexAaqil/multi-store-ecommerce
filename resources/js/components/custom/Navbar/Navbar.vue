@@ -49,8 +49,29 @@ const tabs = computed(() => {
 });
 
 const activeTab = computed(() => {
-    const currentPath = page.url;
-    const tab = tabs.value.find(t => currentPath.startsWith(t.path));
+    const currentPath = page.url.split('?')[0]; // Remove query params
+    const currentPathWithoutTrailingSlash = currentPath.replace(/\/$/, ''); // Remove trailing slash
+    
+    // Special case for home
+    if (currentPathWithoutTrailingSlash === '') {
+        return 'home';
+    }
+    
+    // Find the tab that matches exactly or is the parent of the current path
+    const tab = tabs.value.find(t => {
+        if (t.path === '/') return false; // Skip home for non-home paths
+        
+        // Exact match
+        if (currentPathWithoutTrailingSlash === t.path) return true;
+        
+        // For dashboard, match any subpath like /dashboard/orders, /dashboard/products
+        if (t.id === 'dashboard' && currentPathWithoutTrailingSlash.startsWith('/dashboard/')) {
+            return true;
+        }
+        
+        return false;
+    });
+    
     return tab?.id || 'home';
 });
 
@@ -65,12 +86,12 @@ const handleLogout = () => {
 </script>
 
 <template>
-    <nav class="bg-white border-b border-gray-200 fixed top-0 w-full z-50">
+    <nav class="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-700 fixed top-0 w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex items-center justify-between h-14">
                 <!-- Logo -->
-                <Link href="/" class="flex items-center font-serif text-xl dark:text-gray-400">
-                    Multi<span class="italic text-gray-500 dark:text-gray-900">Store</span>
+                <Link href="/" class="flex items-center font-serif text-xl dark:text-gray-100">
+                    Multi<span class="italic text-gray-500 dark:text-gray-400">Store</span>
                 </Link>
 
                 <!-- Desktop Navigation - Hidden on mobile -->
@@ -82,7 +103,7 @@ const handleLogout = () => {
                         :class="[
                             'px-4 py-1.5 rounded-lg text-sm transition-all flex items-center gap-1.5',
                             activeTab === tab.id
-                                ? 'bg-gray-900 text-white'
+                                ? 'bg-gray-900 dark:bg-gray-600 text-white'
                                 : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                         ]"
                     >
