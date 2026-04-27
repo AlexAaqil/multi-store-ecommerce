@@ -10,17 +10,24 @@ import DeleteConfirmationDialog from '@/components/custom/DeleteConfirmation.vue
 import ProductCard from '@/pages/guest/components/ProductCard.vue';
 import { useCartStore } from '@/stores/cart';
 import productsRoutes from '@/routes/products';
+import discountsRoutes from '@/routes/discounts';
 
 const page = usePage<any>();
 
 interface Discount {
+    id: number;
     name: string;
     type: number;
+    type_label: string;
     value: number;
     formatted_value: string;
     percentage_off: number;
+    scope_label: string;
+    is_active: boolean;
+    is_expired: boolean;
     starts_at: string;
     expires_at: string;
+    targets_count: number;
     is_scheduled: boolean;
     starts_in_days: number | null;
 }
@@ -77,13 +84,35 @@ const props = defineProps<{
         total: number;
         links: any[];
     };
+    discounts: {
+        data: Discount[];
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+        from: number | null;
+        to: number | null;
+        links: {
+            url: string | null;
+            label: string;
+            active: boolean;
+        }[];
+        first_page_url: string | null;
+        last_page_url: string | null;
+        next_page_url: string | null;
+        prev_page_url: string | null;
+        path: string;
+    };
 }>();
 
-const activeTab = ref('products');
+const activeTab = ref('orders');
 
 const tabs = [
+    { id: 'orders', label: 'Orders' },
     { id: 'products', label: 'All Products' },
+    { id: 'discounts', label: 'Discounts' },
     { id: 'on_offer', label: 'On Offer' },
+    { id: 'inventory', label: 'Inventory' },
     { id: 'about', label: 'About' },
     { id: 'reviews', label: 'Reviews' },
 ];
@@ -336,6 +365,101 @@ const formatDate = (dateString: string) => {
                     <!-- Pagination -->
                     <div v-if="props.products.links && props.products.links.length > 3" class="mt-6 flex justify-center gap-1">
                         <Link v-for="link in props.products.links" :key="link.label" :href="link.url || '#'" 
+                            v-html="link.label" 
+                            class="px-3 py-1 border rounded text-sm"
+                            :class="{
+                                'bg-gray-100 text-gray-500 cursor-not-allowed': !link.url,
+                                'bg-blue-600 text-white border-blue-600': link.active,
+                                'hover:bg-gray-50': link.url && !link.active
+                            }" />
+                    </div>
+                </div>
+                <div v-else class="py-12 text-center text-gray-400 text-sm">
+                    No products available yet.
+                </div>
+            </div>
+
+            <div v-if="activeTab === 'discounts'" class="discounts-tab">
+                <div v-if="discounts.data.length > 0" class="">
+                    <div class="table-wrapper">
+                        <div class="table-header">
+                            <div class="stats">
+                                <h2>Discounts</h2>
+                            </div>
+                            
+                            <div class="action-button">
+                                <Link :href="discountsRoutes.create().url">+ New Discount</Link>
+                            </div>
+                        </div>
+
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Type</TableHead>
+                                    <TableHead>Value</TableHead>
+                                    <TableHead>Applies To</TableHead>
+                                    <TableHead>Schedule</TableHead>
+                                    <TableHead class="thead-actions">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+
+                            <TableBody>
+                                <TableRow v-for="discount in props.discounts.data" :key="discount.id">
+                                    <TableCell 
+                                        :class="{
+                                            'font-medium': true, 
+                                            'text-red-600': !discount.is_active
+                                        }"
+                                    >
+                                        {{ discount.name }}
+                                    </TableCell>
+                                    <TableCell>{{ discount.type_label }}</TableCell>
+                                    <TableCell>
+                                        <span class="font-semibold text-green-600">
+                                            {{ discount.formatted_value }}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        {{ discount.scope_label }}
+                                        <span v-if="discount.targets_count > 0" class="text-xs text-gray-500 ml-1">
+                                            ({{ discount.targets_count }})
+                                        </span>
+                                    </TableCell>
+                                    <TableCell class="text-sm">
+                                        {{ discount.starts_at }} - {{ discount.expires_at }}
+                                    </TableCell>
+                                    <TableCell class="tbody-actions">
+                                        <div class="actions">
+                                            <Link :href="discountsRoutes.edit(discount.id).url" class="action edit">
+                                                <Pencil class="w-4 h-4" />
+                                            </Link>
+                                            <DeleteConfirmationDialog 
+                                                :url="discountsRoutes.destroy(discount.id).url" 
+                                                title="Delete Discount?" 
+                                                description="This discount will be deleted permanently!" 
+                                                confirm-text="Delete Discount">
+                                                <template #trigger>
+                                                    <button class="action delete">
+                                                        <Trash2 class="w-4 h-4" />
+                                                    </button>
+                                                </template>
+                                            </DeleteConfirmationDialog>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow v-if="props.discounts.data.length === 0">
+                                    <TableCell colspan="6" class="text-center py-8 text-gray-500">
+                                        No discounts found. Click "Create Discount" to get started.
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div v-if="props.discounts.links && props.discounts.links.length > 3" class="mt-6 flex justify-center gap-1">
+                        <Link v-for="link in props.discounts.links" :key="link.label" :href="link.url || '#'" 
                             v-html="link.label" 
                             class="px-3 py-1 border rounded text-sm"
                             :class="{

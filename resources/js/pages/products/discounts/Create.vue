@@ -96,7 +96,7 @@ const submitForm = () => {
         ...(data.scope === SCOPE_SPECIFIC_PRODUCTS && { product_ids: data.product_ids }),
     })).post(discounts.store().url, {
         preserveScroll: true,
-        onSuccess: () => router.visit('/discounts'),
+        onSuccess: () => router.visit(`/shops/${props.shop.id}`),
     });
 };
 </script>
@@ -307,7 +307,7 @@ const submitForm = () => {
                 >
                     {{ form.processing ? 'Creating...' : 'Create Discount' }}
                 </Button>
-                <Button type="button" variant="outline" @click="router.visit('/discounts')">
+                <Button type="button" variant="outline" @click="router.visit(`/shops/${shop.id}`)">
                     Cancel
                 </Button>
             </div>

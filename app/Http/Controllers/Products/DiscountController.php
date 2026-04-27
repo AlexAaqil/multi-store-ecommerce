@@ -101,7 +101,9 @@ class DiscountController extends Controller
             $this->syncDiscountTargets($discount, $request);
         });
 
-        return redirect()->route('discounts.index')->with([
+        return redirect()
+            ->route('shops.show', $shop->id)
+            ->with([
             'message' => 'Discount created successfully',
             'type'    => 'success',
         ]);
@@ -147,7 +149,9 @@ class DiscountController extends Controller
             $this->syncDiscountTargets($discount, $request);
         });
 
-        return redirect()->route('discounts.index')->with([
+        return redirect()
+            ->route('shops.show', $shop->id)
+            ->with([
             'message' => 'Discount updated successfully',
             'type'    => 'success',
         ]);

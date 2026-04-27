@@ -104,11 +104,6 @@ const mainNavItems = computed(() =>{
                 href: shops.index(),
                 icon: Store,
             },
-            {
-                title: 'Discounts',
-                href: discounts.index(),
-                icon: Percent,
-            },
         );
     }
 

@@ -137,6 +137,29 @@ class ShopController extends Controller
                 return $this->product_deals_service->transformProduct($product, $shop_discounts);
             });
         
+        $discounts = Discount::forShop($shop->id)->orderByDesc('created_at')
+            ->withCount(['products', 'categories'])
+            ->paginate(15)
+            ->through(fn($d) => [
+                'id'              => $d->id,
+                'name'            => $d->name,
+                'type_label'      => $d->type_label,
+                'formatted_value' => $d->formatted_value,
+                'scope_label'     => $d->scope_label,
+                'is_active'       => $d->is_active,
+                'is_expired'      => $d->is_expired,
+                'starts_at'       => $d->starts_at->format('d/m/Y h:i A'),
+                'expires_at'      => $d->expires_at->format('d/m/Y h:i A'),
+                'is_scheduled'    => $d->starts_at->isFuture(), // True if starts in future
+                'starts_in_days'  => $d->starts_at->isFuture() ? $d->starts_at->diffInDays(now()) : null,
+                'status'          => $d->is_active_now ? 'active' : ($d->starts_at->isFuture() ? 'scheduled' : ($d->is_expired ? 'expired' : 'inactive')),
+                'targets_count'   => $d->scope === Discount::SCOPE_PRODUCT_CATEGORY 
+                    ? $d->categories_count 
+                    : ($d->scope === Discount::SCOPE_SPECIFIC_PRODUCTS 
+                        ? $d->products_count 
+                        : 0),
+            ]);
+        
         $shop_stats = [
             'total_products' => $shop->products()->count(),
             'total_sales' => 0,
@@ -167,6 +190,7 @@ class ShopController extends Controller
                 'created_at' => $shop->created_at,
             ],
             'products' => $products,
+            'discounts' => $discounts
         ]);
     }
 
