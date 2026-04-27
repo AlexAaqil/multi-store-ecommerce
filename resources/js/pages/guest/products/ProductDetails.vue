@@ -6,6 +6,8 @@ import Button from '@/components/ui/button/Button.vue';
 import { Star, Minus, Plus, ShoppingCart, Heart, Share2, Truck, RotateCcw, ShieldCheck } from 'lucide-vue-next';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import ProductPrice from '@/components/custom/Products/Price.vue';
+import AddToCartButton from '@/pages/guest/components/AddToCartButton.vue';
+import { useCartStore } from '@/stores/cart';
 
 interface ProductImage {
     id: number;
@@ -48,11 +50,18 @@ interface Review {
     created_at: string;
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     product: Product;
     related_products: Product[];
     reviews: Review[];
-}>();
+    showStockIndicator?: boolean;
+    showAddToCart?: boolean;
+    buttonText?: string;
+}>(), {
+    showStockIndicator: true,
+    showAddToCart: true,
+    buttonText: 'Add To Cart'
+});
 
 const quantity = ref(1);
 const selectedImage = ref(props.product.images?.[0]?.full_url || null);
@@ -76,11 +85,6 @@ const increaseQuantity = () => {
     }
 };
 
-const addToCart = () => {
-    // Add to cart logic
-    console.log('Adding to cart:', props.product.id, quantity.value);
-};
-
 const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-KE', {
         style: 'currency',
@@ -93,6 +97,27 @@ const averageRating = computed(() => {
     if (props.reviews.length === 0) return 0;
     const sum = props.reviews.reduce((acc, review) => acc + review.rating, 0);
     return (sum / props.reviews.length).toFixed(1);
+});
+
+const cartStore = useCartStore();
+
+// Check if product is in cart
+const isInCart = computed(() => {
+    return cartStore.items.some(item => item.product_id === props.product.id);
+});
+
+// Get cart quantity
+const cartQuantity = computed(() => {
+    const item = cartStore.items.find(item => item.product_id === props.product.id);
+    return item?.quantity || 0;
+});
+
+// Determine button display text
+const buttonDisplayText = computed(() => {
+    if (props.buttonText !== 'Add To Cart') {
+        return props.buttonText;
+    }
+    return isInCart.value ? `Update Cart (${cartQuantity.value})` : 'Add To Cart';
 });
 </script>
 
@@ -178,14 +203,23 @@ const averageRating = computed(() => {
 
                         <!-- Action Buttons -->
                         <div class="action-buttons">
-                            <button 
+                            <!-- <button 
                                 v-if="product.stock_qty > 0"
                                 @click="addToCart" 
                                 class="add-to-cart-btn"
                             >
                                 <ShoppingCart class="w-4 h-4" />
                                 Add to Cart
-                            </button>
+                            </button> -->
+                            <AddToCartButton
+                                v-if="product.stock_qty > 0"
+                                :product-id="product.id"
+                                :product-name="product.name"
+                                :stock="product.stock_qty"
+                                :button-text="buttonDisplayText"
+                                @success="cartStore.fetchCart()"
+                                class="add-to-cart-btn"
+                            />
                             <button v-else class="add-to-cart-btn disabled" disabled>
                                 Out of Stock
                             </button>

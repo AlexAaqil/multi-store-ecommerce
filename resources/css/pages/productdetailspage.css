@@ -10,7 +10,7 @@
     }
 
     .ProductHero {
-        @apply bg-white border border-gray-200 rounded-2xl p-6;
+        @apply bg-(--background) border border-(--border) rounded-2xl p-6;
 
         .product-hero-wrapper {
             @apply grid grid-cols-1 md:grid-cols-2 gap-8;
@@ -138,10 +138,18 @@
                 @apply flex gap-3 mb-6;
 
                 .add-to-cart-btn {
-                    @apply flex-1 bg-gray-900 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors;
+                    @apply flex-1;
 
-                    &.disabled {
-                        @apply bg-gray-300 cursor-not-allowed;
+                    button {
+                        @apply font-medium flex items-center justify-center bg-gray-900 hover:bg-gray-800 transition-colors py-3;
+
+                        &:disabled {
+                            @apply bg-gray-300 cursor-not-allowed;
+                        }
+
+                        span {
+                            @apply flex items-center justify-center gap-2;
+                        }                        
                     }
                 }
 
@@ -151,7 +159,7 @@
             }
 
             .trust-badges {
-                @apply flex gap-4 pt-4 border-t border-gray-100;
+                @apply flex gap-4 pt-4 border-t border-(--border);
 
                 .badge {
                     @apply flex items-center gap-2 text-xs text-gray-500;
