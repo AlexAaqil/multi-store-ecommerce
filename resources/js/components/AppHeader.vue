@@ -105,11 +105,6 @@ const mainNavItems = computed(() =>{
                 icon: Store,
             },
             {
-                title: 'Products',
-                href: products.index(),
-                icon: Barcode,
-            },
-            {
                 title: 'Discounts',
                 href: discounts.index(),
                 icon: Percent,

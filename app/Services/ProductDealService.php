@@ -33,11 +33,13 @@ class ProductDealService
         return [
             'id' => $product->id,
             'name' => $product->name,
+            'sku' => $product->sku,
             'slug' => $product->slug,
             'price' => $product->price,
             'discounted_price' => $discount ? (float) $this->discount_service->calculateDiscountedPrice($product->price, $discount) : null,
             'discount_pct' => $discount ? (int) $this->discount_service->calculatePercentageOff($product->price, $discount) : null,
             'stock_qty' => $product->stock_qty,
+            'is_active' => $product->is_active,
             'image_url' => $product->primary_image_url,
             'category' => $product->category?->name,
             'shop_id' => $product->shop_id,

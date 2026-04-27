@@ -1,6 +1,15 @@
 .table-wrapper {
     @apply bg-white dark:bg-gray-900 rounded-lg border shadow-sm overflow-hidden;
 
+    .table-header {
+        @apply flex items-center justify-between p-4;
+
+        a,
+        button {
+            @apply bg-white dark:bg-gray-950 border border-transparent hover:border-(--border) py-2 px-4 rounded-lg;
+        }
+    }
+
     table {
         thead {
             tr {

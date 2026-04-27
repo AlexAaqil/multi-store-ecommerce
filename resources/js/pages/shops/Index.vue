@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { Head, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, Plus, Store } from 'lucide-vue-next';
@@ -51,10 +52,10 @@ const deleteShop = (id: number) => {
                 <p class="text-sm text-gray-500 mt-1 dark:text-gray-300">Manage your store and settings</p>
             </div>
             <Button v-if="!hasShop" as-child>
-                <a href="/shops/create">
+                <Link :href="shopsLinks.create().url">
                     <Plus class="w-4 h-4 mr-2" />
                     Create Shop
-                </a>
+                </Link>
             </Button>
         </div>
 
@@ -89,7 +90,9 @@ const deleteShop = (id: number) => {
 
                 <div class="shop-card-body">
                     <div class="shop-card-body">
-                        <h3 class="shop-card-name">{{ shop.name }}</h3>
+                        <Link :href="shopsLinks.show(shop.id).url">
+                            <h3 class="shop-card-name">{{ shop.name }}</h3>
+                        </Link>
                         <p class="shop-card-category">{{ shop.category || 'Uncategorized' }}</p>
                         <p class="shop-card-description">
                             {{ shop.description || 'No description provided' }}
@@ -116,13 +119,13 @@ const deleteShop = (id: number) => {
                             </div>
                             
                             <div class="actions">
-                                <a
+                                <Link
                                     :href="shopsLinks.edit(shop.id).url"
                                     class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
                                     title="Edit Shop"
                                 >
                                     <Pencil class="w-4 h-4 text-gray-500" />
-                                </a>
+                                </Link>
 
                                 <!-- Delete -->
                                 <AlertDialog>
@@ -167,10 +170,10 @@ const deleteShop = (id: number) => {
             <h3 class="text-lg font-medium text-gray-900 mb-2">No shops yet</h3>
             <p class="text-gray-500 mb-4">Create your first shop to start selling</p>
             <Button as-child>
-                <a href="/shops/create">
+                <Link :href="shopsLinks.create().url">
                     <Plus class="w-4 h-4 mr-2" />
                     Create Shop
-                </a>
+                </Link>
             </Button>
         </div>
     </div>

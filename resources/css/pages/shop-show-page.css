@@ -1,0 +1,141 @@
+.ShopShowPage {
+    @apply w-[96dvw] mx-auto;
+
+    section {
+        @apply mb-6;
+    }
+
+    .Hero {
+        @apply bg-white dark:bg-background border border-(--border) p-6 rounded-2xl;
+
+        .hero-wrapper {
+            .icon-text {
+                @apply flex gap-8;
+
+                .icon {
+                    @apply h-16 w-16 bg-gray-100 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0;
+
+                    img {
+                        @apply w-full h-full object-cover;
+                    }
+                }
+
+                .text {
+                    @apply flex-1;
+
+                    .text-wrapper {
+                        @apply grid gap-2;
+
+                        .name {
+                            @apply font-serif text-2xl font-semibold;
+                        }
+
+                        .badges {
+                            @apply flex gap-2;
+
+                            span {
+                                @apply text-xs px-2 py-1 rounded-full;
+
+                                &:first-of-type {
+                                    @apply bg-green-50 text-green-800;
+                                }
+
+                                &:last-of-type {
+                                    @apply bg-gray-100 text-gray-800;
+                                }
+                            }
+                        }
+
+                        .description {
+                            @apply text-sm text-gray-500 max-w-2xl;
+                        }
+                    }
+                }
+            }
+
+            .stats {
+                @apply grid grid-cols-3 gap-4 lg:flex lg:gap-8 mt-6 pt-5 border-t border-gray-100 dark:border-gray-700;
+
+                .stat {
+                    @apply text-center;
+
+                    .number {
+                        @apply text-xl font-semibold;
+                    }
+
+                    .text {
+                        @apply text-xs text-gray-400
+                    }
+                }
+            }
+        }
+    }
+
+    .TabsContent {
+        @apply py-8;
+
+        .tabs {
+            @apply border-b border-(--border) mb-6;
+
+            .tabs-wrapper {
+                @apply flex gap-6;
+            }
+        }
+
+        .products-tab {
+            .products-wrapper {
+                @apply grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6;
+            }
+        }
+
+        .about-tab {
+            .about-tab-wrapper {
+                @apply bg-white border border-gray-200 rounded-lg p-6 dark:bg-background dark:border-gray-700;
+
+                .name {
+                    @apply text-xl font-semibold mb-4;
+                }
+
+                .description {
+                    @apply text-gray-600 leading-relaxed;
+                }
+
+                .info {
+                    @apply mt-6 pt-6 border-t border-gray-200 dark:border-gray-700;
+
+                    .title {
+                        @apply font-medium mb-3;
+                    }
+
+                    .details {
+                        @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+
+                        div {
+                            dt {
+                                @apply text-sm text-gray-500;
+                            }
+
+                            dd {
+                                @apply font-medium;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .reviews-tab {
+            .reviews-wrapper {
+                 @apply bg-gray-50 rounded-lg p-6 text-center dark:bg-background dark:border-gray-700;
+
+                 .title {
+                    @apply text-lg font-medium text-gray-900 mb-2 dark:text-foreground;
+                 }
+
+                 .description {
+                    @apply text-gray-500 dark:text-gray-300;
+                 }
+            }
+        }
+    }
+}

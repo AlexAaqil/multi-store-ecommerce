@@ -11,9 +11,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Requests\Shops\ShopRequest;
+use App\Models\Products\Discount;
+use App\Services\DiscountService;
+use App\Services\ProductDealService;
 
 class ShopController extends Controller
 {
+    public function __construct(
+        protected DiscountService $discount_service,
+        protected ProductDealService $product_deals_service
+    ) {}
+
     protected function user(): User
     {
         return Auth::user();
@@ -107,6 +115,58 @@ class ShopController extends Controller
         return redirect()->route('shops.index')->with([
             'message' => "Shop {$shop->name} created successfully",
             'type' => 'success'
+        ]);
+    }
+
+    public function show (Shop $shop) {
+        if ($shop->owner_id !== $this->user()->id) {
+            abort(403);
+        }
+
+        $shop_discounts = Discount::active()
+            ->forShop($shop->id)
+            ->get();
+
+        $products = $shop->products()
+            ->with('category')
+            ->where('is_active', true)
+            ->latest()
+            ->paginate(12)
+            ->through(function ($product) use ($shop_discounts) {
+                // Service handles everything - with or without discount
+                return $this->product_deals_service->transformProduct($product, $shop_discounts);
+            });
+        
+        $shop_stats = [
+            'total_products' => $shop->products()->count(),
+            'total_sales' => 0,
+            'total_reviews' => 0,
+            'average_rating' => 0,
+            'response_rate' => 98,
+            'response_time' => 'within 24 hours',
+        ];
+
+        return inertia('shops/Show', [
+            'shop' => [
+                'id' => $shop->id,
+                'name' => $shop->name,
+                'slug' => $shop->public_slug,
+                'description' => $shop->description,
+                'logo_url' => $shop->logo_url_full,
+                'cover_url' => $shop->cover_url_full,
+                'contact_email' => $shop->contact_email,
+                'contact_phone' => $shop->contact_phone,
+                'is_active' => $shop->is_active,
+                'is_verified' => $shop->is_verified,
+                'category' => $shop->category?->name,
+                'owner' => [
+                    'name' => $shop->owner?->name,
+                    'joined' => $shop->created_at->diffForHumans(),
+                ],
+                'stats' => $shop_stats,
+                'created_at' => $shop->created_at,
+            ],
+            'products' => $products,
         ]);
     }
 

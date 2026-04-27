@@ -29,10 +29,10 @@ Route::put('cart/item/{cartItem}', [CartController::class, 'update'])->name('car
 Route::delete('cart/item/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
 Route::delete('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
-Route::middleware(['auth', 'verified'])
+Route::middleware(['auth', 'verified', 'role:seller'])
     ->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('shops', ShopController::class)->except('show');
+    Route::resource('shops', ShopController::class);
     Route::resource('products', ProductController::class)->except('show');
     Route::delete('product-images/{image}', [ProductImageController::class, 'destroy'])->name('product-images.destroy');
     Route::resource('discounts', DiscountController::class)->except('show');

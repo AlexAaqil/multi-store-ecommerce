@@ -176,7 +176,7 @@ class ProductController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('products.index')
+                ->route('shops.show', $shop->id)
                 ->with([
                     'message' => "Product {$product->name} created successfully",
                     'type' => 'success'
@@ -249,7 +249,9 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return redirect()->route('products.index')->with([
+            return redirect()
+                ->route('shops.show', $shop->id)
+                ->with([
                 'message' => "Product {$product->name} updated successfully",
                 'type' => 'success'
             ]);

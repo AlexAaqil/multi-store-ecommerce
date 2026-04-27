@@ -89,7 +89,7 @@ const submitForm = () => {
     form.post(products.store().url, {
         preserveScroll: true,
         onSuccess: () => {
-            router.visit('/products');
+            router.visit(`/shops/${props.shop.id}`);
         },
     });
 };
@@ -347,7 +347,7 @@ const submitForm = () => {
                     {{ form.processing ? 'Creating...' : 'Create Product' }}
                 </Button>
 
-                <Button type="button" variant="outline" @click="router.visit('/products')">
+                <Button type="button" variant="outline" @click="router.visit(`/shops/${shop.id}`)">
                     Cancel
                 </Button>
             </div>

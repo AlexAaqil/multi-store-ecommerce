@@ -143,7 +143,7 @@ const submitForm = () => {
     form.post(products.update(props.product.id).url, {
         preserveScroll: true,
         onSuccess: () => {
-            router.visit('/products');
+            router.visit(`/shops/${props.shop.id}`);
         },
     });
 };
@@ -381,7 +381,7 @@ const submitForm = () => {
                     {{ form.processing ? 'Saving...' : 'Update Product' }}
                 </Button>
                 
-                <Button type="button" variant="outline" @click="router.visit('/products')">
+                <Button type="button" variant="outline" @click="router.visit(`/shops/${shop.id}`)">
                     Cancel
                 </Button>
             </div>

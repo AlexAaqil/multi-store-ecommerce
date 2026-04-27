@@ -40,7 +40,7 @@ const bgColor = () => {
   <transition name="fade">
     <div
       v-if="visible"
-      :class="['fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg', bgColor()]"
+      :class="['fixed bottom-5 right-5 px-4 py-2 z-100 rounded shadow-lg', bgColor()]"
     >
       {{ message }}
     </div>
