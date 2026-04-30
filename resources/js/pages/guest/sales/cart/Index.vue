@@ -128,7 +128,7 @@ const clearCart = () => {
             
             <!-- Should route to: :href="cartRoutes.checkout()" -->
             <Link 
-              href="/"
+              href="/checkout"
               class="block w-full bg-blue-600 text-white text-center px-6 py-3 rounded hover:bg-blue-700"
             >
               Proceed to Checkout

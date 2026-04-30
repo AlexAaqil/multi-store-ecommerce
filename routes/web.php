@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GuestPagesController;
+use App\Http\Controllers\GuestPages\GuestSalesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Shops\ShopCategoryController;
@@ -12,15 +13,24 @@ use App\Http\Controllers\Products\ProductImageController;
 use App\Http\Controllers\Products\DiscountController;
 use App\Http\Controllers\Sales\CartController;
 
-Route::controller(GuestPagesController::class)
-    ->middleware([])
-    ->group(function () {
-        Route::get('/', 'homePage')->name('home');
-        Route::get('discover-shops', 'discoverShops')->name('discover-shops');
-        Route::get('shop-details/{shop:slug}', 'shopDetails')->name('shop-details-page');
-        Route::get('product-details/{product:slug}', 'productDetails')->name('product-details-page');
-        Route::get('deals', 'dealsAndOffersPage')->name('deals-page');
-    });
+Route::middleware([])->group(function () {
+    Route::get('/', [GuestPagesController::class, 'homePage'])->name('home');
+    Route::get('discover-shops', [GuestPagesController::class, 'discoverShops'])->name('discover-shops');
+    Route::get('shop-details/{shop:slug}', [GuestPagesController::class, 'shopDetails'])->name('shop-details-page');
+    Route::get('product-details/{product:slug}', [GuestPagesController::class, 'productDetails'])->name('product-details-page');
+    Route::get('deals', [GuestPagesController::class, 'dealsAndOffersPage'])->name('deals-page');
+
+    // Cart routes
+    Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+    Route::get('cart/summary', [CartController::class, 'summary'])->name('cart.summary');
+    Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::put('cart/item/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('cart/item/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+    Route::get('checkout', [GuestSalesController::class, 'checkoutPage'])->name('checkout.index');
+    Route::post('checkout', [GuestSalesController::class, 'processCheckout'])->name('checkout.store');
+});
 
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('cart/summary', [CartController::class, 'summary'])->name('cart.summary');
